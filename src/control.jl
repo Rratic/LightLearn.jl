@@ -3,7 +3,6 @@ levelid=0
 plyx=0
 plyy=0
 formal=false
-canvas=GtkCanvas()
 function _draw()
     ctx=getgc(canvas)
 	for i in 1:16
@@ -15,6 +14,7 @@ function _draw()
 end
 function about()
 	print("""
+	使用init()初始化资源
 	使用level(num)打开关卡num
 	在那之后你可以进行一些尝试，然后使用
 	submit() do

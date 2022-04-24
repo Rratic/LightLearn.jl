@@ -1,4 +1,4 @@
-function plyenter(i::Any,::Int,::Int)
+function plyenter(i::Any)
 	if solid(i)
 		throw(LiError(:cheat))
 	end
@@ -43,7 +43,7 @@ end
 show_grid(ctx::DContext,::Info,x::Int,y::Int)=fill_image(ctx,"info",x,y)
 
 struct Dice end
-function plyenter(::Dice,x::Int,y::Int)
-	grids[x,y]=rand(1:6)
+function plyenter(::Dice)
+	grids[plyx,plyy]=rand(1:6)
 end
 show_grid(ctx::DContext,::Dict,x::Int,y::Int)=fill_image(ctx,"dice",x,y)

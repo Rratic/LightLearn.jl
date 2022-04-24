@@ -1,4 +1,4 @@
-module Little
+module LightLearn
 using Gtk
 using Cairo
 using ColorTypes:RGB24
@@ -14,8 +14,10 @@ include("types.jl")
 export grids,about,level,help,submit,mvw,mva,mvs,mvd
 include("control.jl")
 
-function __init__()
-	global window=GtkWindow("Little",512,512;resizable=false)
+export init
+function init() # __init__
+	global window=GtkWindow("LightLearn",512,512;resizable=false)
+	global canvas=GtkCanvas()
 	push!(window,canvas)
 	Gtk.init_cairo_context(canvas)
 	cd(dirname(@__DIR__))

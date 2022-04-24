@@ -1,4 +1,4 @@
-name = "Little"
+name = "LightLearn"
 uuid = "aea05ee4-eee8-4bb2-9be1-ccb376bfd141"
 authors = ["Rratic"]
 version = "1.0.0-alpha"
@@ -7,9 +7,13 @@ version = "1.0.0-alpha"
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"
 ColorTypes = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-FixedPointNumbers = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 Gtk = "4c0ca9eb-093a-5379-98c5-f87ac0bbbf44"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 
 [compat]
 julia = "1"
+Cairo = "1"
+ColorTypes = "0.11"
+FileIO = "1.12"
+Gtk = "1.1"
+ImageIO = "0.5"
