@@ -19,7 +19,7 @@ function show_grid(ctx::DContext,num::Int,x::Int,y::Int)
 	set_source_rgb(ctx,0.75,0.75,0.75)
 	rectangle(ctx,x,y,32,32)
 	fill(ctx)
-	fill_text(ctx,string(num),x,y,32)
+	fill_text(ctx,string(num),x,y)
 end
 
 # Vector
@@ -48,12 +48,11 @@ struct Dice end
 function plyenter(::Dice)
 	grids[plyx,plyy]=rand(1:6)
 end
-show_grid(ctx::DContext,::Dict,x::Int,y::Int)=fill_image(ctx,"dice",x,y)
+show_grid(ctx::DContext,::Dice,x::Int,y::Int)=fill_image(ctx,"dice",x,y)
 
 struct GuessLock
 	value
 	onguess::Function
-	onunlock::Function
 end
 solid(::GuessLock)=false
 show_grid(ctx::DContext,::GuessLock,x::Int,y::Int)=fill_image(ctx,"guesslock",x,y)

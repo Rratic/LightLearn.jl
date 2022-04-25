@@ -23,7 +23,7 @@ export guess # 特殊接口
 export interval # 可调变量
 include("control.jl")
 
-export init
+export init,vis
 function init() # __init__
 	global window=GtkWindow("LightLearn",512,512;resizable=false)
 	global canvas=GtkCanvas()
@@ -34,6 +34,10 @@ function init() # __init__
 		load_imgsource(s[1:end-4],"img/$s")
 	end
 	showall(window)
+	nothing
+end
+function vis(b::Bool)
+	visible(window,b)
 end
 
 end

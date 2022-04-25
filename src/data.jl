@@ -50,8 +50,8 @@ const levels=[
 		"循环的使用","",
 		1,1,()->begin
 		fill!(grids,nothing)
-		for i in 2:2:14
-			for j in 2:15
+		for i in 2:15
+			for j in 2:2:14
 				grids[i,j]=Solid()
 			end
 		end
@@ -81,15 +81,12 @@ const levels=[
 			v,
 			(i::GuessLock,v)->begin
 				if v==i.value
-					i.onunlock()
+					grids[1,2]=nothing
+					grids[1,2+v]=Flag()
 					return nothing
 				else
 					throw(false)
 				end
-			end,
-			()->begin
-				grids[1,2]=nothing
-				grids[1,2+v]=Flag()
 			end
 		)
 	end,()->begin

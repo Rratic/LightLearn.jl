@@ -1,11 +1,17 @@
 function _draw()
     ctx=getgc(canvas)
+	cacx=plyx # 缓存
+	cacy=plyy
 	for i in 1:16
 		for j in 1:16
-			show_grid(ctx,grids[i,j],(i-1)<<5,(j-1)<<5)
+			if i!=cacx||j!=cacy
+				show_grid(ctx,grids[i,j],(i-1)<<5,(j-1)<<5)
+			else
+				show_grid(ctx,nothing,(i-1)<<5,(j-1)<<5)
+				fill_image(ctx,"ply",i<<5-30,j<<5-30)
+			end
 		end
 	end
-	fill_image(ctx,"ply",plyx<<5-30,plyy<<5-30)
 end
 function about()
 	print("""
@@ -18,6 +24,7 @@ function about()
 	来提交
 	建议在编辑器上编辑好再复制黏贴
 	你可以使用help()获取当前关卡提示（若有）
+	使用vis(false)关闭窗口，使用vis(true)重新打开
 	""")
 end
 function initlevel(lv::Level)
@@ -30,6 +37,7 @@ end
 function level(num::Int)
 	global levelid=num
 	lv=levels[num]
+	set_gtk_property!(window,:title,"LightLearn: Level $num")
 	initlevel(lv)
 end
 function help()
