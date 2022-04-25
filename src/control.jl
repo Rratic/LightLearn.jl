@@ -1,8 +1,3 @@
-grids=Matrix(undef,16,16)
-levelid=0
-plyx=0
-plyy=0
-formal=false
 function _draw()
     ctx=getgc(canvas)
 	for i in 1:16
@@ -21,6 +16,7 @@ function about()
 		你的代码
 	end
 	来提交
+	建议在编辑器上编辑好再复制黏贴
 	你可以使用help()获取当前关卡提示（若有）
 	""")
 end
@@ -28,6 +24,7 @@ function initlevel(lv::Level)
 	global plyx=lv.startx
 	global plyy=lv.starty
 	lv.gen()
+	plyenter(grids[lv.startx,lv.starty])
 	_draw()
 end
 function level(num::Int)
@@ -55,6 +52,7 @@ function move(x::Int,y::Int)
 	global plyy=ty
 	plyenter(grids[tx,ty])
 	_draw()
+	sleep(formal ? interval : interval/2)
 end
 function submit(f::Function)
 	count=0
@@ -77,6 +75,7 @@ function submit(f::Function)
 			println(
 				sy==:cheat ? "禁止作弊" :
 				sy==:tle ? "超过规定步数限制（$(lv.limit)）" :
+				sy==:invisible_far ? "太远了，无法调用look()" :
 				"[未知]"
 			)
 		else
@@ -85,4 +84,19 @@ function submit(f::Function)
 	finally
 		formal=false
 	end
+end
+
+function chknear(x::Int,y::Int)
+	if abs(x-plyx)+abs(y-plyy)>1
+		throw(LiError(:invisible_far))
+	end
+end
+function look(x::Int,y::Int)
+	chknear(x,y)
+	v=grids[x,y]
+	return _look(v)
+end
+function guess(x::Int,y::Int,v)
+	chknear(x,y)
+	return _guess(grids[x,y],v)
 end

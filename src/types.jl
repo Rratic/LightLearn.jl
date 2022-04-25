@@ -1,9 +1,11 @@
+# Any
 function plyenter(i::Any)
 	if solid(i)
 		throw(LiError(:cheat))
 	end
 end
 solid(::Any)=false
+_look(i)=i
 
 # Nothing
 function show_grid(ctx::DContext,::Nothing,x::Int,y::Int)
@@ -47,3 +49,15 @@ function plyenter(::Dice)
 	grids[plyx,plyy]=rand(1:6)
 end
 show_grid(ctx::DContext,::Dict,x::Int,y::Int)=fill_image(ctx,"dice",x,y)
+
+struct GuessLock
+	value
+	onguess::Function
+	onunlock::Function
+end
+solid(::GuessLock)=false
+show_grid(ctx::DContext,::GuessLock,x::Int,y::Int)=fill_image(ctx,"guesslock",x,y)
+_look(::GuessLock)="[access denied]"
+function _guess(i::GuessLock,v)
+	i.onguess(i,v)
+end

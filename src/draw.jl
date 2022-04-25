@@ -8,7 +8,7 @@ function load_imgsource(name::String,path::String)
 	m2=Matrix{RGB24}(undef,h,w)
 	for i in 1:h
 		for j in 1:w
-			m2[i,j]=RGB24(mat[i,j])
+			m2[i,j]=RGB24(mat[j,i]) # specific
 		end
 	end
 	imgsources[name]=m2
