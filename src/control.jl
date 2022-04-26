@@ -33,6 +33,7 @@ function about()
 	建议在编辑器上编辑好再复制黏贴
 	你可以使用help()获取当前关卡提示（若有）
 	使用vis(false)关闭窗口，使用vis(true)重新打开
+	使用quit()退出并保存存档
 	""")
 end
 function initlevel(lv::Level)
@@ -68,25 +69,41 @@ function move(x::Int,y::Int)
 	global plyy=ty
 	plyenter(grids[tx,ty])
 	_draw()
-	sleep(formal ? interval : interval/2)
+	if formal
+		count::Int+=1
+		sleep(interval)
+	end
 end
 function submit(f::Function)
-	count=0
+	global count=0
 	lv=levels[levelid]
 	initlevel(lv)
 	global formal=true
 	try
 		f()
 		if !lv.chk()
-			println("未达成目标")
+			printstyled("未达成目标";color=:yellow)
+			return
 		end
 		if count>lv.limit
 			throw(LiError(:tle))
 		end
-		println("通过")
+		printstyled("通过！ 步数：$count";color=:green)
+		l=length(records::Vector{Int})
+		if levelid>l
+			sizehint!(records,levelid)
+			for i in l+1:levelid-1
+				push!(records,-1)
+			end
+			push!(records,count)
+		else
+			if records[levelid]==-1 || records[levelid]>count
+				records[levelid]=count
+			end
+		end
 	catch er
 		if isa(er,LiError)
-			print("Error: ")
+			printstyled("Error: ";color=:red)
 			sy=er.name
 			println(
 				sy==:cheat ? "禁止作弊" :
