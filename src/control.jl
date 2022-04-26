@@ -2,16 +2,24 @@ function _draw()
     ctx=getgc(canvas)
 	cacx=plyx # 缓存
 	cacy=plyy
+	set_source_rgb(ctx,0.75,0.75,0.75) # 背景填充
+	rectangle(ctx,0,0,512,512)
+	fill(ctx)
 	for i in 1:16
 		for j in 1:16
 			if i!=cacx||j!=cacy
 				show_grid(ctx,grids[i,j],(i-1)<<5,(j-1)<<5)
 			else
-				show_grid(ctx,nothing,(i-1)<<5,(j-1)<<5)
 				fill_image(ctx,"ply",i<<5-30,j<<5-30)
 			end
 		end
 	end
+	set_source_rgb(ctx,0.625,0.625,0.625)
+	for k in 1:16
+		rectangle(ctx,k<<5-1,0,1,512)
+		rectangle(ctx,0,k<<5-1,512,1)
+	end
+	fill(ctx)
 end
 function about()
 	print("""

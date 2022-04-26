@@ -83,6 +83,7 @@ const levels=[
 				if v==i.value
 					grids[1,2]=nothing
 					grids[1,2+v]=Flag()
+					_draw()
 					return nothing
 				else
 					throw(false)
