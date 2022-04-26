@@ -44,13 +44,12 @@ function plyenter(::Dice)
 end
 show_grid(ctx::DContext,::Dice,x::Int,y::Int)=fill_image(ctx,"dice",x+4,y+4)
 
-struct GuessLock
-	value
+struct Lock
 	onguess::Function
 end
-solid(::GuessLock)=false
-show_grid(ctx::DContext,::GuessLock,x::Int,y::Int)=fill_image(ctx,"guesslock",x+3,y+3)
-_look(::GuessLock)="[access denied]"
-function _guess(i::GuessLock,v)
+solid(::Lock)=true
+show_grid(ctx::DContext,::Lock,x::Int,y::Int)=fill_image(ctx,"guesslock",x+3,y+3)
+_look(::Lock)="[access denied]"
+function _guess(i::Lock,v)
 	i.onguess(i,v)
 end
