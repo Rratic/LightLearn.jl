@@ -13,7 +13,7 @@ plyx=0
 plyy=0
 count=0
 formal=false
-interval=0.0
+interval=0.5
 canvas=GtkCanvas()
 records=[-1]
 
@@ -49,6 +49,7 @@ function init_save()
 			io=open("LightLearn/records.toml","r")
 			dict=TOML.parse(io)
 			global records=dict["records"]
+			close(io)
 		end
 	else
 		println("未找到环境参数 \"LOCALAPPDATA\" ，将无法存档")
@@ -91,6 +92,7 @@ function quit()
 		TOML.print(io,Dict(
 			"records"=>records::Vector{Int},
 		))
+		close(io)
 	end
 end
 
