@@ -8,7 +8,7 @@ function _draw()
 	for i in 1:16
 		for j in 1:16
 			if i!=cacx||j!=cacy
-				show_grid(ctx,grids[i,j],(i-1)<<5,(j-1)<<5)
+				show_grid(ctx,@inbounds(grids[i,j]),(i-1)<<5,(j-1)<<5)
 			else
 				fill_image(ctx,"ply",i<<5-30,j<<5-30)
 			end
@@ -23,18 +23,27 @@ function _draw()
 end
 function about()
 	print("""
-	使用init()初始化资源
-	使用level(num)打开关卡num
-	在那之后你可以进行一些尝试，然后使用
+	流程：
+	init()		初始化资源
+	level(num)	打开关卡num
+	此时可以进行一些测试
 	submit() do
 		你的代码
 	end
-	来提交
-	建议在编辑器上编辑好再复制黏贴
-	你可以使用help()获取当前关卡提示（若有）
-	使用vis(false)关闭窗口，使用vis(true)重新打开
-	使用quit()退出并保存存档
+	来提交（建议在编辑器上编辑好再复制黏贴）
+	quit()		退出并保存存档
+
+	辅助工具：
+	menu()		列出当前所有关卡和描述
+	help()		获取当前关卡提示（若有）
+	vis(false)	关闭窗口
+	vis(true)	打开窗口
 	""")
+end
+function menu()
+	for pa in levels
+		println(pa.first,'\t',pa.second.description)
+	end
 end
 function initlevel(lv::Level)
 	global plyx=lv.startx

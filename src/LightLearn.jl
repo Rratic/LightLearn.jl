@@ -22,7 +22,7 @@ include("types.jl")
 
 include("data.jl")
 
-export about,level,help,submit,mvw,mva,mvs,mvd,look # 通用接口
+export about,menu,level,help,submit,mvw,mva,mvs,mvd,look # 通用接口
 export guess # 特殊接口
 export interval # 可调变量
 include("control.jl")

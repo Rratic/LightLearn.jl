@@ -107,7 +107,7 @@ const levels=Dict{Int,Level}(
 		""")
 		grids[7,2]=grids[5,6]=grids[6,9]=Dice()
 		grids[15,15]=Lock(
-			(i::GuessLock,v)->begin
+			(i::Lock,v)->begin
 				if isa(grids[7,2],Int)&&isa(grids[5,6],Int)&&isa(grids[6,9],Int)&&v==grids[7,2]+grids[5,6]+grids[6,9]
 					grids[15,15]=nothing
 					_draw()
