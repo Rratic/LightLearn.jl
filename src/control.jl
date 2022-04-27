@@ -22,7 +22,7 @@ function _draw()
 	fill(ctx)
 end
 function about()
-	print(md"""
+	display(md"""
 # 流程
 ```jl
 init()		初始化资源
@@ -49,7 +49,7 @@ function menu()
 	for pa::Pair in chapters
 		println("[ $(pa.first) ]")
 		for name in pa.second
-			println("\t$name\t$(levels[name].description)")
+			println("$name\t$(levels[name].description)")
 		end
 	end
 end
@@ -57,7 +57,6 @@ function initlevel(lv::Level)
 	global plyx=lv.startx
 	global plyy=lv.starty
 	lv.gen()
-	plyenter(grids[lv.startx,lv.starty])
 	_draw()
 end
 level(num::Int)=level(string(num))
@@ -66,6 +65,7 @@ function level(name::String)
 	lv=levels[name]
 	set_gtk_property!(window,:title,"LightLearn: $(lv.description)")
 	initlevel(lv)
+	plyenter(grids[lv.startx,lv.starty])
 end
 function help()
 	println(levels[levelid].help)
@@ -86,11 +86,11 @@ function move(x::Int,y::Int)
 	global plyx=tx
 	global plyy=ty
 	plyenter(grids[tx,ty])
-	_draw()
 	if formal
 		global count+=1
 		sleep(interval)
 	end
+	_draw()
 end
 function submit(f::Function)
 	global count=0

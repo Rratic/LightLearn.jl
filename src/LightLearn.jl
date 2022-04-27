@@ -48,8 +48,13 @@ function init_save()
 			mkdir("LightLearn")
 		elseif in("save.toml",readdir("LightLearn";sort=false))
 			io=open("LightLearn/save.toml","r")
-			dict=TOML.parse(io)
-			global records=dict["records"]
+			dict=TOML.tryparse(io)
+			if isa(dict,TOML.ParserError)
+				println("位于 $(joinpath(pwd(),"LightLearn/save.toml"))的TOML格式导入失败")
+			else
+				dict::Dict
+				global records=dict["records"]
+			end
 			close(io)
 		end
 	else
