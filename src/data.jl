@@ -7,8 +7,11 @@ struct Level
 	chk::Function
 	limit::Int
 end
-const levels=Dict{Int,Level}(
-	1=>Level(
+const chapters=[
+	"语法基础"=>["1","2","3","4","5"],
+]
+const levels=Dict{String,Level}(
+	"1"=>Level(
 		"简介","调用about()查看基本操作",
 		7,7,()->begin
 		fill!(grids::Matrix,nothing)
@@ -23,7 +26,7 @@ const levels=Dict{Int,Level}(
 	end,()->begin
 		return plyx==10&&plyy==10
 	end,40),
-	2=>Level(
+	"2"=>Level(
 		"条件的使用","当你处在(x,y)或它的4个相邻格时，可以用look(x,y)获取(x,y)处值",
 		7,7,()->begin
 		fill!(grids::Matrix,nothing)
@@ -46,7 +49,7 @@ const levels=Dict{Int,Level}(
 			return v&2==1 ? (plyx==10&&plyy==8) : (plyx==7&&plyy==10)
 		end
 	end,40),
-	3=>Level(
+	"3"=>Level(
 		"循环的使用","",
 		1,1,()->begin
 		fill!(grids::Matrix,nothing)
@@ -65,7 +68,7 @@ const levels=Dict{Int,Level}(
 	end,()->begin
 		return plyx==1&&plyy==16
 	end,200),
-	4=>Level(
+	"4"=>Level(
 		"异常处理","当你处在(x,y)或它的4个相邻格时，可以用guess(x,y,v)提交你的猜测",
 		1,1,()->begin
 		fill!(grids::Matrix,nothing)
@@ -93,7 +96,7 @@ const levels=Dict{Int,Level}(
 	end,()->begin
 		return isa(grids[plyx,plyy],Flag)
 	end,40),
-	5=>Level(
+	"5"=>Level(
 		"函数定义","",
 		2,2,()->begin
 		fill!(grids::Matrix,nothing)

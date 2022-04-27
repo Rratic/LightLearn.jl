@@ -8,14 +8,14 @@ using TOML
 include("draw.jl")
 
 grids=Matrix{Any}(nothing,16,16)
-levelid=0
+levelid=""
 plyx=0
 plyy=0
 count=0
 formal=false
 interval=0.5
 canvas=GtkCanvas()
-records=[-1]
+records=Dict{String,Int}()
 
 export solid # 通用接口
 include("types.jl")
@@ -45,8 +45,8 @@ function init_save()
 		cd(@inbounds(ENV["LOCALAPPDATA"]))
 		if !in("LightLearn",readdir("./";sort=false))
 			mkdir("LightLearn")
-		elseif in("records.toml",readdir("LightLearn";sort=false))
-			io=open("LightLearn/records.toml","r")
+		elseif in("save.toml",readdir("LightLearn";sort=false))
+			io=open("LightLearn/save.toml","r")
 			dict=TOML.parse(io)
 			global records=dict["records"]
 			close(io)
@@ -88,9 +88,9 @@ function quit()
 	global canvas=nothing
 	if haskey(ENV,"LOCALAPPDATA")
 		cd(@inbounds(ENV["LOCALAPPDATA"]))
-		io=open("LightLearn/records.toml","w")
+		io=open("LightLearn/save.toml","w")
 		TOML.print(io,Dict(
-			"records"=>records::Vector{Int},
+			"records"=>records::Dict{String,Int},
 		))
 		close(io)
 	end

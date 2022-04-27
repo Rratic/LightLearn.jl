@@ -25,7 +25,7 @@ function about()
 	print("""
 	流程：
 	init()		初始化资源
-	level(num)	打开关卡num
+	level(name)	打开关卡name
 	此时可以进行一些测试
 	submit() do
 		你的代码
@@ -41,8 +41,11 @@ function about()
 	""")
 end
 function menu()
-	for pa in levels
-		println(pa.first,'\t',pa.second.description)
+	for pa::Pair in chapters
+		println("[ $(pa.first) ]")
+		for name in pa.second
+			println("\t$name\t$(levels[name].description)")
+		end
 	end
 end
 function initlevel(lv::Level)
@@ -52,10 +55,11 @@ function initlevel(lv::Level)
 	plyenter(grids[lv.startx,lv.starty])
 	_draw()
 end
-function level(num::Int)
-	global levelid=num
-	lv=levels[num]
-	set_gtk_property!(window,:title,"LightLearn: Level $num")
+level(num::Int)=level(string(num))
+function level(name::String)
+	global levelid=name
+	lv=levels[name]
+	set_gtk_property!(window,:title,"LightLearn: $(lv.description)")
 	initlevel(lv)
 end
 function help()
@@ -79,7 +83,7 @@ function move(x::Int,y::Int)
 	plyenter(grids[tx,ty])
 	_draw()
 	if formal
-		count::Int+=1
+		global count+=1
 		sleep(interval)
 	end
 end
@@ -98,17 +102,12 @@ function submit(f::Function)
 			throw(LiError(:tle))
 		end
 		printstyled("通过！ 步数：$count";color=:green)
-		l=length(records::Vector{Int})
-		if levelid>l
-			sizehint!(records,levelid)
-			for i in l+1:levelid-1
-				push!(records,-1)
-			end
-			push!(records,count)
-		else
-			if records[levelid]==-1 || records[levelid]>count
+		if haskey(records,levelid)
+			@inbounds if records[levelid]>count
 				records[levelid]=count
 			end
+		else
+			records[levelid]=count
 		end
 	catch er
 		if isa(er,LiError)
