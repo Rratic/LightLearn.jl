@@ -15,12 +15,28 @@ const levels=Dict{String,Level}(
 		"简介","调用about()查看基本操作",
 		7,7,()->begin
 		fill!(grids::Matrix,nothing)
-		grids[7,7]=Info("""
-		你可以在 do ... end 间使用函数
-		mvw() 向上移动
-		mva() 向左移动
-		mvs() 向下移动
-		mvd() 向右移动
+		grids[7,7]=Info(md"""
+# 信息
+你可以在 do ... end 间使用函数
+```jl
+mvw() 向上移动
+mva() 向左移动
+mvs() 向下移动
+mvd() 向右移动
+```
+# 目标
+移动到旗帜处
+# 示例
+```jl
+submit() do
+	mvs()
+	mvs()
+	mvs()
+	mvd()
+	mvd()
+	mvd()
+end
+```
 		""")
 		grids[10,10]=Flag()
 	end,()->begin
@@ -30,12 +46,14 @@ const levels=Dict{String,Level}(
 		"条件的使用","当你处在(x,y)或它的4个相邻格时，可以用look(x,y)获取(x,y)处值",
 		7,7,()->begin
 		fill!(grids::Matrix,nothing)
-		grids[7,7]=Info("""
-		没错，这里有2个旗帜。
-		去哪一个呢？
-		看到那个骰子了吗？你走过去，就会产生一个整数（通过look(7,8)获取）
-		若掷到1、3、5，就去右边的旗帜
-		否则，就去下面的旗帜
+		grids[7,7]=Info(md"""
+# 信息
+没错，这里有2个旗帜。\
+去哪一个呢？
+# 目标
+看到那个骰子了吗？你走过去，在它的原位置就会产生一个整数（通过`look(7,8)`获取）\
+若掷到1、3、5，就去右边的旗帜\
+否则，就去下面的旗帜
 		""")
 		grids[7,8]=Dice()
 		grids[7,10]=Flag()
@@ -59,10 +77,13 @@ const levels=Dict{String,Level}(
 			end
 		end
 		grids[1,2]=grids[1,6]=grids[1,10]=grids[1,14]=grids[16,4]=grids[16,8]=grids[16,12]=Solid()
-		grids[1,1]=Info("""
-		你可以看到，这里的有许多深色方格，它们是墙
-		这里的地形似乎有些类似？
-		为了省力，你可以用什么呢？
+		grids[1,1]=Info(md"""
+# 信息
+你可以看到，这里的有许多深色方格，它们是墙\
+这里的地形似乎有些类似？\
+为了省力，你可以用什么呢？
+# 目标
+移动到旗帜处
 		""")
 		grids[1,16]=Flag()
 	end,()->begin
@@ -72,13 +93,16 @@ const levels=Dict{String,Level}(
 		"异常处理","当你处在(x,y)或它的4个相邻格时，可以用guess(x,y,v)提交你的猜测",
 		1,1,()->begin
 		fill!(grids::Matrix,nothing)
-		grids[1,1]=Info("""
-		你的面前有一个密码锁
-		它的密码是1~10之间的一个整数
-		你可以使用guess(1,2,猜测的数n)进行猜测
-		如果你猜对了，请在锁位置向下走n步
-		如果猜错了，锁会抛出异常，你必须进行处理
-		注：除特殊注明外，禁止使用异常处理
+		grids[1,1]=Info(md"""
+# 信息
+你的面前有一个密码锁\
+它的密码是1~10之间的一个整数\
+你可以使用`guess(1,2,猜测的数n)`进行猜测\
+# 目标
+如果你猜对了，请在锁位置向下走n步
+如果猜错了，锁会抛出异常，你必须进行处理
+!!! 注意
+	除特殊注明外，禁止使用异常处理
 		""")
 		val=rand(1:10)
 		grids[1,2]=Lock(
@@ -100,13 +124,20 @@ const levels=Dict{String,Level}(
 		"函数定义","",
 		2,2,()->begin
 		fill!(grids::Matrix,nothing)
-		grids[2,2]=Info("""
-		你是否厌倦了不断地调用mvs()或写半天的循环代码？
-		你可以把一些功能包装在函数中，例如：
-		function mvs(n::Int) # 向下移动n步
-			你的代码
-		end
-		在本关中，锁的密码是各骰子掷得的值之和
+		grids[2,2]=Info(md"""
+# 信息
+你是否厌倦了不断地调用`mvs()`或写半天的循环代码？\
+你可以把一些功能包装在函数中
+# 目标
+解锁，锁的密码是各骰子掷得的值之和
+# 示例
+```jl
+function mvs(n::Int) # 向下移动n步
+	for i in 1:n
+		mvs()
+	end
+end
+```
 		""")
 		grids[7,2]=grids[5,6]=grids[6,9]=Dice()
 		grids[15,15]=Lock(

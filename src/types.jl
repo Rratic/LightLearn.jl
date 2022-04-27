@@ -30,7 +30,7 @@ end
 struct Flag end
 show_grid(ctx::DContext,::Flag,x::Int,y::Int)=fill_image(ctx,"flag",x+9,y+2)
 
-struct Info s::String end
+struct Info s::Union{String,MD} end
 function plyenter(i::Info)
 	if !formal
 		println(i.s)

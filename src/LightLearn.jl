@@ -3,6 +3,7 @@ using Gtk
 using Cairo
 using ColorTypes:RGB24
 using FileIO
+using Markdown
 using TOML
 
 include("draw.jl")
