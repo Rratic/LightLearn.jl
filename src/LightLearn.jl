@@ -1,9 +1,10 @@
 module LightLearn
 using Gtk
 using Cairo
-using ColorTypes:RGB24
-using FileIO
+using ColorTypes:RGB24,RGB
 using Markdown
+using PNGFiles
+using PNGFiles.FixedPointNumbers:N0f8
 using TOML
 
 include("draw.jl")
@@ -96,7 +97,7 @@ function quit()
 		cd(@inbounds(ENV["LOCALAPPDATA"]))
 		io=open("LightLearn/save.toml","w")
 		TOML.print(io,Dict(
-			"records"=>records::Dict{String,Int},
+			"records"=>records::Dict,
 		))
 		close(io)
 	end

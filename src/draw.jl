@@ -1,7 +1,7 @@
 const DContext=Union{CairoContext,GraphicsContext}
 global imgsources=Dict{String,Matrix}()
 function load_imgsource(name::String,path::String)
-	mat=FileIO.load(path)
+	mat=PNGFiles.load(path)
 	tup=size(mat)
 	h=tup[1]
 	w=tup[2]

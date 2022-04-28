@@ -98,6 +98,7 @@ function submit(f::Function)
 	initlevel(lv)
 	global formal=true
 	try
+		plyenter(grids[lv.startx,lv.starty])
 		f()
 		if !lv.chk()
 			printstyled("未达成目标";color=:yellow)
@@ -139,7 +140,10 @@ function chknear(x::Int,y::Int)
 end
 function look(x::Int,y::Int)
 	chknear(x,y)
-	v=grids[x,y]
+	if x<1||y<1||x>16||y>16
+		return Solid()
+	end
+	v=@inbounds grids[x,y]
 	return _look(v)
 end
 function guess(x::Int,y::Int,v)

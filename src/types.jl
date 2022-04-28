@@ -53,3 +53,25 @@ _look(::Lock)="[access denied]"
 function _guess(i::Lock,v)
 	i.onguess(i,v)
 end
+
+mutable struct Box
+	data::Vector
+	color::RGB
+	color2::RGB
+end
+solid(::Box)=true
+function show_grid(ctx::DContext,i::Box,x::Int,y::Int)
+	set_source_rgb(ctx,0.0,0.0,0.0)
+	rectangle(ctx,x+3,y+3,26,26)
+	fill(ctx)
+	set_source_rgb(ctx,i.color.r,i.color.g,i.color.b)
+	rectangle(ctx,x+4,y+4,24,24)
+	fill(ctx)
+	set_source_rgb(ctx,0.0,0.0,0.0)
+	rectangle(ctx,x+4,y+9,24,1)
+	fill(ctx)
+	set_source_rgb(ctx,i.color2.r,i.color2.g,i.color2.b)
+	rectangle(ctx,x+14,y+10,4,3)
+	fill(ctx)
+end
+_look(i::Box)=i.data
