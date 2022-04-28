@@ -1,7 +1,7 @@
 name = "LightLearn"
 uuid = "aea05ee4-eee8-4bb2-9be1-ccb376bfd141"
 authors = ["Rratic"]
-version = "1.0.0-alpha"
+version = "1.0.0-beta"
 
 [deps]
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"

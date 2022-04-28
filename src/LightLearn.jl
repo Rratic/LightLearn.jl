@@ -34,7 +34,6 @@ function init() # __init__
 	init_save()
 	init_source()
 	init_canvas()
-	init_coord()
 	showall(window::GtkWindow)
 	nothing
 end
@@ -84,22 +83,23 @@ function init_coord()
 	end
 end
 
-@guarded draw(canvas::GtkCanvas) do widget
+@guarded draw(canvas::GtkCanvas) do widget # https://docs.gtk.org/gtk4/class.DrawingArea.html
 	init_coord()
 	_draw()
 end
 
 function quit()
-	vis(false)
-	global window=nothing
-	global canvas=nothing
+	destroy(window)
 	if haskey(ENV,"LOCALAPPDATA")
 		cd(@inbounds(ENV["LOCALAPPDATA"]))
 		io=open("LightLearn/save.toml","w")
-		TOML.print(io,Dict(
-			"records"=>records::Dict,
-		))
-		close(io)
+		try
+			TOML.print(io,Dict(
+				"records"=>records::Dict,
+			))
+		finally
+			close(io)
+		end
 	end
 end
 

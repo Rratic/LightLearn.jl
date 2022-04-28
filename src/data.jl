@@ -38,13 +38,16 @@ submit() do
 	mvd()
 end
 ```
+
+!!! note
+	窗口会进行延时动画演示
 		""")
 		grids[10,10]=Flag()
 	end,()->begin
 		return plyx==10&&plyy==10
 	end,40),
 	"2"=>Level(
-		"条件的使用","当你处在(x,y)或它的4个相邻格时，可以用look(x,y)获取(x,y)处值",
+		"条件的使用","",
 		7,7,()->begin
 		fill!(grids::Matrix,nothing)
 		grids[7,7]=Info(md"""
@@ -55,6 +58,9 @@ end
 看到那个骰子了吗？你走过去，在它的原位置就会产生一个整数（通过`look(7,8)`获取）\
 若掷到1、3、5，就去右边的旗帜\
 否则，就去下面的旗帜
+
+!!! note
+	当且仅当你处在`(x,y)`或它的4个相邻格时，可以用`look(x,y)`获取`(x,y)`处值
 		""")
 		grids[7,8]=Dice()
 		grids[7,10]=Flag()
@@ -91,7 +97,7 @@ end
 		return plyx==1&&plyy==16
 	end,200),
 	"4"=>Level(
-		"异常处理","当你处在(x,y)或它的4个相邻格时，可以用guess(x,y,v)提交你的猜测",
+		"异常处理","",
 		1,1,()->begin
 		fill!(grids::Matrix,nothing)
 		grids[1,1]=Info(md"""
@@ -106,7 +112,8 @@ end
 	除特殊注明外，禁止使用异常处理
 
 !!! note
-	你不能移动到锁上
+	你不能移动到锁上\
+	当且仅当你处在`(x,y)`或它的的4个相邻格时，可以用`guess(x,y,v)`提交你的猜测
 		""")
 		val=rand(1:10)
 		grids[1,2]=Lock(

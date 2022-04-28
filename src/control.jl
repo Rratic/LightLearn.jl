@@ -2,9 +2,6 @@ function _draw()
     ctx=getgc(canvas)
 	cacx=plyx # 缓存
 	cacy=plyy
-	set_source_rgb(ctx,0.75,0.75,0.75) # 背景填充
-	rectangle(ctx,0,0,512,512)
-	fill(ctx)
 	for i in 1:16
 		for j in 1:16
 			if i!=cacx||j!=cacy
@@ -57,7 +54,7 @@ function initlevel(lv::Level)
 	global plyx=lv.startx
 	global plyy=lv.starty
 	lv.gen()
-	_draw()
+	draw(canvas)
 end
 level(num::Int)=level(string(num))
 function level(name::String)
@@ -90,7 +87,7 @@ function move(x::Int,y::Int)
 		global count+=1
 		sleep(interval)
 	end
-	_draw()
+	draw(canvas)
 end
 function submit(f::Function)
 	global count=0
@@ -131,6 +128,7 @@ function submit(f::Function)
 	finally
 		formal=false
 	end
+	nothing
 end
 
 function chknear(x::Int,y::Int)
