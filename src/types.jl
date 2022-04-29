@@ -71,7 +71,7 @@ function show_grid(ctx::DContext,i::Box,x::Int,y::Int)
 	rectangle(ctx,x+4,y+9,24,1)
 	fill(ctx)
 	set_source_rgb(ctx,i.color2.r,i.color2.g,i.color2.b)
-	rectangle(ctx,x+14,y+10,4,3)
+	rectangle(ctx,x+14,y+8,4,3)
 	fill(ctx)
 end
 _look(i::Box)=i.data
