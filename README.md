@@ -21,3 +21,9 @@ vis(false)	关闭窗口
 vis(true)	打开窗口
 interval	提交时的动画间隔
 ```
+
+## 关卡导入
+```jl
+init(false)	初始化时不导入默认关卡
+loaddir(s)	导入s处的目录所含数据
+```
