@@ -22,6 +22,7 @@ records=Dict{String,Int}()
 export solid # 通用接口
 include("types.jl")
 
+export loaddir
 include("data.jl")
 
 export about,menu,level,help,submit,mvw,mva,mvs,mvd,look # 通用接口
@@ -30,11 +31,14 @@ export interval # 可调变量
 include("control.jl")
 
 export init,vis,quit
-function init() # __init__
+function init(b::Bool=true) # __init__
 	init_save()
 	init_source()
 	init_canvas()
 	showall(window::GtkWindow)
+	if b
+		loaddir(joinpath(@__DIR__,"../lvdata"))
+	end
 	nothing
 end
 function vis(b::Bool)

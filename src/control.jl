@@ -64,9 +64,6 @@ function level(name::String)
 	initlevel(lv)
 	plyenter(grids[lv.startx,lv.starty])
 end
-function help()
-	println(levels[levelid].help)
-end
 struct LiError
 	name::Symbol
 end
@@ -84,13 +81,11 @@ function move(x::Int,y::Int)
 	global plyy=ty
 	plyenter(grids[tx,ty])
 	if formal
-		global count+=1
 		sleep(interval)
 	end
 	draw(canvas)
 end
 function submit(f::Function)
-	global count=0
 	lv=levels[levelid]
 	initlevel(lv)
 	global formal=true
@@ -100,9 +95,6 @@ function submit(f::Function)
 		if !lv.chk()
 			printstyled("未达成目标";color=:yellow)
 			return
-		end
-		if count>lv.limit
-			throw(LiError(:tle))
 		end
 		printstyled("通过！ 步数：$count";color=:green)
 		if haskey(records,levelid)
@@ -114,13 +106,11 @@ function submit(f::Function)
 		end
 	catch er
 		if isa(er,LiError)
-			printstyled("Error: ";color=:red)
 			sy=er.name
-			println(
+			printstyled("Error: ",
 				sy==:cheat ? "禁止作弊" :
-				sy==:tle ? "超过规定步数限制（$(lv.limit)）" :
 				sy==:invisible_far ? "太远了，无法调用look()" :
-				"[未知]"
+				"[未知]";color=:red
 			)
 		else
 			throw(er)
