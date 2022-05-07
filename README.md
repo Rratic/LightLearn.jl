@@ -16,7 +16,6 @@ quit()		退出并保存存档
 ## 辅助工具
 ```jl
 menu()		列出当前所有关卡和描述
-help()		获取当前关卡提示（若有）
 vis(false)	关闭窗口
 vis(true)	打开窗口
 interval	提交时的动画间隔
@@ -27,3 +26,10 @@ interval	提交时的动画间隔
 init(false)	初始化时不导入默认关卡
 loaddir(s)	导入s处的目录所含数据
 ```
+
+# 关卡创建
+目录下应包含以下文件
+1. `setting.toml`，应包含2个键
+	* `versions`当前应有`main`对应关卡版本号
+	* `chapters`，对于每个章节，提供对应的关卡id数组
+2. `main.jl`，返回值应是`Vector{Pair{String,Level}}`，表示关卡id和对应数据的数组
