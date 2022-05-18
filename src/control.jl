@@ -18,6 +18,8 @@ function _draw()
 	end
 	fill(ctx)
 end
+
+"获取相关信息"
 function about()
 	display(md"""
 # 流程
@@ -29,6 +31,7 @@ submit() do
 	你的代码
 end
 来提交（建议在编辑器上编辑好再复制黏贴）
+rewind()	重启当前关卡
 quit()		退出并保存存档
 ```
 
@@ -47,6 +50,8 @@ loaddir(s)	导入s处的目录所含数据
 ```
 	""")
 end
+
+"列出当前导入数据中的章节和关卡描述"
 function menu()
 	for pa::Pair in chapters
 		println("[ $(pa.first) ]")
@@ -62,10 +67,20 @@ function initlevel(lv::Level)
 	draw(canvas)
 end
 level(num::Int)=level(string(num))
+"导入关卡名为name的关卡"
 function level(name::String)
+	if formal
+		throw("不能在提交时调用level")
+	end
 	global levelid=name
 	lv=levels[name]
 	set_gtk_property!(window,:title,"LightLearn: $(lv.description)")
+	initlevel(lv)
+	plyenter(grids[lv.startx,lv.starty])
+end
+"重启当前关卡"
+function rewind()
+	lv=levels[levelid]
 	initlevel(lv)
 	plyenter(grids[lv.startx,lv.starty])
 end
@@ -90,6 +105,7 @@ function move(x::Int,y::Int)
 	end
 	draw(canvas)
 end
+"提交当前关卡的尝试f"
 function submit(f::Function)
 	lv=levels[levelid]
 	initlevel(lv)
@@ -131,6 +147,7 @@ function chknear(x::Int,y::Int)
 		throw(LiError(:invisible_far))
 	end
 end
+"查看(x,y)处的东西，必须在相邻4格或当前格"
 function look(x::Int,y::Int)
 	chknear(x,y)
 	if x<1||y<1||x>16||y>16
