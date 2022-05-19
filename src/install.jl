@@ -19,7 +19,36 @@ function installzip(url::AbstractString)
 	close(fio)
 	re=ZipFile.Reader(fpath)
 	fs=re.files
+	maindir=fs[1].name # 实践得出
+	len=length(maindir)
+	fnum=length(fs)
+	tomls=""
+	# 除去github自动生成的第一层目录包裹
+	for f in 2:fnum
+		fs[f].name=chop(fs[f].name;head=len,tail=0)
+		if fs[f].name=="Project.toml"
+			tomls=read(fs[f],String)
+		end
+	end
+	if tomls==""
+		throw("未找到位于根的Project.toml")
+	end
+	toml=TOML.parse(tomls)
+	pname=toml["name"]
+	cd(getllpdir(pname))
+	@info "关卡包数据" toml["version"] toml["description"]
+	for f in 2:fnum
+		if iszero(fs[f].method)
+			mkpath(fs[f].name)
+		else
+			buf=readavailable(fs[f])
+			io=open(fs[f].name,"w")
+			write(io,ltoh(buf))
+			close(io)
+		end
+	end
 	close(re)
+	rm(fpath)
 end
 function install(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")
 	io=IOBuffer()
