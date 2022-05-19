@@ -81,9 +81,6 @@ function rewind()
 	initlevel(lv)
 	plyenter(grids[lv.startx,lv.starty])
 end
-struct LiError
-	name::Symbol
-end
 mvw()=move(0,-1)
 mva()=move(-1,0)
 mvs()=move(0,1)
@@ -123,13 +120,8 @@ function submit(f::Function)
 			records[levelid]=count
 		end
 	catch er
-		if isa(er,LiError)
-			sy=er.name
-			printstyled("Error: ",
-				sy==:cheat ? "禁止作弊" :
-				sy==:invisible_far ? "太远了，无法调用look()" :
-				"[未知]";color=:red
-			)
+		if isa(er,String)
+			printstyled(er;color=:red)
 		else
 			throw(er)
 		end
@@ -141,7 +133,7 @@ end
 
 function chknear(x::Int,y::Int)
 	if abs(x-plyx)+abs(y-plyy)>1
-		throw(LiError(:invisible_far))
+		throw("太远了，无法调用look()")
 	end
 end
 "查看(x,y)处的东西，必须在相邻4格或当前格"

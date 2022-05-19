@@ -1,7 +1,7 @@
 # Any
 function plyenter(i::Any)
 	if solid(i)
-		throw(LiError(:cheat))
+		throw("禁止作弊")
 	end
 end
 solid(::Any)=false
