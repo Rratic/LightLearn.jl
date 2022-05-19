@@ -8,7 +8,10 @@ end
 private=Dict{Symbol,Any}()
 chapters=Dict{String,Vector{String}}()
 levels=Dict{String,Level}()
-function loaddir(s::String)
+function loadpack(s::AbstractString)
+	loaddir(getllpdir(s))
+end
+function loaddir(s::AbstractString)
 	@info "导入关卡包：$s"
 	mod=include(joinpath(s,"main.jl"))
 	typeassert(mod,Module)

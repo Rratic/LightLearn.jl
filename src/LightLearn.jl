@@ -7,10 +7,14 @@ using PNGFiles
 using PNGFiles.FixedPointNumbers:N0f8
 using TOML
 using Scratch
+using Downloads
+using JSON
+using ZipFile
 
 include("draw.jl")
 
-const LightLearnVersion=v"2.0.0"
+export installzip,install
+include("install.jl")
 
 grids=Matrix{Any}(nothing,16,16)
 levelid=""
@@ -25,16 +29,13 @@ records=Dict{String,Int}()
 export solid # 通用接口
 include("types.jl")
 
-export loaddir
+export loadpack,loaddir
 include("data.jl")
 
 export about,menu,level,rewind,submit,mvw,mva,mvs,mvd,look # 通用接口
 export guess # 特殊接口
 export interval # 可调变量
 include("control.jl")
-
-export install
-include("install.jl")
 
 export init,vis,quit
 function init(b::Bool=true) # __init__
@@ -45,7 +46,7 @@ function init(b::Bool=true) # __init__
 	if b
 		dir=getllpdir("Standard")
 		if iszero(stat(dir).inode)
-			install("https://github.com/JuliaRoadmap/Standard.llp","v1.0.0")
+			install("JuliaRoadmap","Standard.llp","v1.0.0")
 		end
 		loaddir(dir)
 	end
