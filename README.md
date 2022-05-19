@@ -22,15 +22,34 @@ vis(true)	打开窗口
 interval	提交时的动画间隔
 ```
 
-## 关卡导入
-```jl
-init(false)	初始化时不导入默认关卡
-loaddir(s)	导入s处的目录所含数据
-```
+## 导出的部分函数
+| 原型 | 描述 |
+| --- | --- |
+| `installzip(url::AbstractString)` | 从指定url下载zip |
+| `install(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")` | 从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版 |
+| `about()` | 获取相关信息 |
+| `menu()` | 列出当前导入数据中的章节和关卡描述 |
+| `level(name::String)` | 导入关卡名为name的关卡，数字会自动转化为字符串 |
+| `rewind()` | 重启当前关卡 |
+| `submit(f::Function)` | 提交当前关卡的尝试f |
+| `interval` | 提交时的动画间隔 |
+| `init(b::Bool=true)` | 初始化数据，其中`b`控制是否导入标准Package项目 |
+| `vis(b::Bool)` | 控制窗口可见性 |
+| `quit()` | 退出并保存存档 |
 
 # 关卡创建
+[标准Package项目地址](https://github.com/JuliaRoadmap/Standard.llp)
+
 目录下应包含以下文件
-1. `setting.toml`，应包含2个键
-	* `versions`当前应有`main`对应关卡版本号
-	* `chapters`，对于每个章节，提供对应的关卡id数组
-2. `main.jl`，返回值应是`Vector{Pair{String,Level}}`，表示关卡id和对应数据的数组
+1. `Project.toml`，至少应包含
+	* `name`当前关卡包名
+	* `uuid`一个UUID
+	* `version`当前版本
+	* `description`介绍
+	* `[chapters]`，对于每个章节，提供对应的关卡id数组
+	* `[compat]`保留
+2. `包名.jl`，返回值是一个元组
+	* 第一项表示关卡id和对应数据::`Vector{Pair{String,Level}}`
+	* 第二项表示build方法，不接受参数
+
+若要支持install方法，应在对应的github仓库发布release，标注恰当的tag（带`v`），在信息中必须含有字段`COMPAT="v版本"`，表示接受的最低LightLearn版本

@@ -22,7 +22,7 @@ plyx=0
 plyy=0
 count=0
 formal=false
-interval=0.5
+"提交时的动画间隔" interval=0.5
 canvas=GtkCanvas()
 records=Dict{String,Int}()
 
@@ -38,6 +38,7 @@ export interval # 可调变量
 include("control.jl")
 
 export init,vis,quit
+"初始化数据，其中`b`控制是否导入标准Package项目"
 function init(b::Bool=true) # __init__
 	if b
 		dir=getllpdir("Standard")
@@ -52,6 +53,7 @@ function init(b::Bool=true) # __init__
 	showall(window::GtkWindow)
 	nothing
 end
+"控制窗口可见性"
 function vis(b::Bool)
 	visible(window::GtkWindow,b)
 end
@@ -103,6 +105,7 @@ end
 	_draw()
 end
 
+"退出并保存存档"
 function quit()
 	destroy(window)
 	if haskey(ENV,"LOCALAPPDATA")

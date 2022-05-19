@@ -43,11 +43,8 @@ vis(true)	打开窗口
 interval	提交时的动画间隔
 ```
 
-# 关卡导入
-```jl
-init(false)	初始化时不导入默认关卡
-loaddir(s)	导入s处的目录所含数据
-```
+# 进阶内容
+参考 [README](@ref) 提供的信息
 	""")
 end
 
@@ -67,7 +64,7 @@ function initlevel(lv::Level)
 	draw(canvas)
 end
 level(num::Int)=level(string(num))
-"导入关卡名为name的关卡"
+"导入关卡名为name的关卡，数字会自动转化为字符串"
 function level(name::String)
 	if formal
 		throw("不能在提交时调用level")

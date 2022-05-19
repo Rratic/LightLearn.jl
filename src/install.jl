@@ -12,6 +12,7 @@ function chkcompat(str::AbstractString)
 		throw("LightLearn版本过低，至少需要$ver")
 	end
 end
+"从指定url下载zip"
 function installzip(url::AbstractString)
 	fpath=joinpath(tempdir(),tempname())*".zip"
 	fio=open(fpath,"w")
@@ -55,6 +56,7 @@ function installzip(url::AbstractString)
 	close(re)
 	rm(fpath)
 end
+"从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版"
 function install(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")
 	io=IOBuffer()
 	quest=request("https://api.github.com/repos/$owner/$repo/releases";method="GET",output=io)
