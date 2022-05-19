@@ -14,7 +14,7 @@ function chkcompat(str::AbstractString)
 end
 function installzip(url::AbstractString)
 	fpath=joinpath(tempdir(),tempname())*".zip"
-	fio=open(fpath)
+	fio=open(fpath,"w")
 	Downloads.download(url,fio)
 	close(fio)
 	re=ZipFile.Reader(fpath)
@@ -35,7 +35,9 @@ function installzip(url::AbstractString)
 	end
 	toml=TOML.parse(tomls)
 	pname=toml["name"]
-	cd(getllpdir(pname))
+	dir=getllpdir(pname)
+	mkpath(dir)
+	cd(dir)
 	@info "关卡包数据" toml["version"] toml["description"]
 	for f in 2:fnum
 		if iszero(fs[f].method)
@@ -47,6 +49,9 @@ function installzip(url::AbstractString)
 			close(io)
 		end
 	end
+	io=open("Project.toml","w")
+	write(io,tomls)
+	close(io)
 	close(re)
 	rm(fpath)
 end
@@ -58,10 +63,21 @@ function install(owner::AbstractString,repo::AbstractString,version::AbstractStr
 	end
 	str=String(take!(io))
 	json=JSON.parse(str)
-	typeassert(json,Vector{Dict})
+	typeassert(json,Vector)
 	if version=="latest"
-		chkcompat(dict[1]["body"])
-		installzip(dict[1]["zipball_url"])
+		for d in json
+			@info "尝试：$(d["tag_name"])"
+			try
+				chkcompat(d["body"])
+				installzip(d["zipball_url"])
+			catch er
+				if isa(er,String)
+					@error er
+				else
+					throw(er)
+				end
+			end
+		end
 	else
 		for d in json
 			if d["tag_name"]==version

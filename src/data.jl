@@ -13,7 +13,9 @@ function loadpack(s::AbstractString)
 end
 function loaddir(s::AbstractString)
 	@info "导入关卡包：$s"
-	mod=include(joinpath(s,"main.jl"))
+	setting=TOML.parsefile(joinpath(s,"Project.toml"))
+	typeassert(setting,Dict)
+	mod=include(joinpath(s,"src/$(setting["name"]).jl"))
 	typeassert(mod,Module)
 	mod.build()
 	for p in mod.llpdata
@@ -22,7 +24,6 @@ function loaddir(s::AbstractString)
 		end
 		levels[p.first]=p.second
 	end
-	setting=TOML.parsefile(joinpath(s,"setting.toml"))
 	chas=setting["chapters"]
 	for p::Pair{String,Vector} in chas
 		if haskey(chapters,p.first)
