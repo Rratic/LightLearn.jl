@@ -15,10 +15,10 @@ function loaddir(s::AbstractString)
 	@info "导入关卡包：$s"
 	setting=TOML.parsefile(joinpath(s,"Project.toml"))
 	typeassert(setting,Dict)
-	mod=include(joinpath(s,"src/$(setting["name"]).jl"))
-	typeassert(mod,Module)
-	mod.build()
-	for p in mod.llpdata
+	tup=include(joinpath(s,"src/$(setting["name"]).jl"))
+	typeassert(tup,Tuple)
+	Base.invokelatest(tup[2]) # !: The applicable method may be too new
+	for p in tup[1]
 		if haskey(levels,p.first)
 			printstyled("关卡名冲突：$(p.first)";color=:red)
 		end

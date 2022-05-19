@@ -39,10 +39,6 @@ include("control.jl")
 
 export init,vis,quit
 function init(b::Bool=true) # __init__
-	init_save()
-	init_source()
-	init_canvas()
-	showall(window::GtkWindow)
 	if b
 		dir=getllpdir("Standard")
 		if iszero(stat(dir).inode)
@@ -50,6 +46,10 @@ function init(b::Bool=true) # __init__
 		end
 		loaddir(dir)
 	end
+	init_save()
+	init_source()
+	init_canvas()
+	showall(window::GtkWindow)
 	nothing
 end
 function vis(b::Bool)

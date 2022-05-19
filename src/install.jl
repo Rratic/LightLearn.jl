@@ -70,6 +70,7 @@ function install(owner::AbstractString,repo::AbstractString,version::AbstractStr
 			try
 				chkcompat(d["body"])
 				installzip(d["zipball_url"])
+				return
 			catch er
 				if isa(er,String)
 					@error er
