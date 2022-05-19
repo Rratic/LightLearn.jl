@@ -10,6 +10,8 @@ using Scratch
 
 include("draw.jl")
 
+const LightLearnVersion=v"2.0.0"
+
 grids=Matrix{Any}(nothing,16,16)
 levelid=""
 plyx=0
@@ -31,6 +33,9 @@ export guess # 特殊接口
 export interval # 可调变量
 include("control.jl")
 
+export install
+include("install.jl")
+
 export init,vis,quit
 function init(b::Bool=true) # __init__
 	init_save()
@@ -38,7 +43,11 @@ function init(b::Bool=true) # __init__
 	init_canvas()
 	showall(window::GtkWindow)
 	if b
-		loaddir(joinpath(@__DIR__,"../lvdata"))
+		dir=getllpdir("Standard")
+		if iszero(stat(dir).inode)
+			install("https://github.com/JuliaRoadmap/Standard.llp","v1.0.0")
+		end
+		loaddir(dir)
 	end
 	nothing
 end

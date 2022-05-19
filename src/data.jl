@@ -9,8 +9,14 @@ private=Dict{Symbol,Any}()
 chapters=Dict{String,Vector{String}}()
 levels=Dict{String,Level}()
 function loaddir(s::String)
-	dict=include(joinpath(s,"main.jl"))
-	for p in dict
+	@info "导入关卡包：$s"
+	mod=include(joinpath(s,"main.jl"))
+	typeassert(mod,Module)
+	mod.build()
+	for p in mod.llpdata
+		if haskey(levels,p.first)
+			printstyled("关卡名冲突：$(p.first)";color=:red)
+		end
 		levels[p.first]=p.second
 	end
 	setting=TOML.parsefile(joinpath(s,"setting.toml"))
