@@ -12,7 +12,7 @@ function loadpack(s::AbstractString)
 	loaddir(getllpdir(s))
 end
 function loaddir(s::AbstractString)
-	@info "导入关卡包：$s"
+	@info "正在导入关卡包：$s"
 	setting=TOML.parsefile(joinpath(s,"Project.toml"))
 	typeassert(setting,Dict)
 	tup=include(joinpath(s,"src/$(setting["name"]).jl"))
