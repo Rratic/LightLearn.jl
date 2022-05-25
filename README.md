@@ -25,11 +25,11 @@ interval	提交时的动画间隔
 ## 导出的部分函数
 | 原型 | 描述 |
 | --- | --- |
-| `installzip(url::AbstractString)` | 从指定url下载zip |
-| `install(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")` | 从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版 |
+| `installzip(url)` | 从指定url下载zip |
+| `install(owner,repo,version="latest")` | 从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版 |
 | `about()` | 获取相关信息 |
 | `menu()` | 列出当前导入数据中的章节和关卡描述 |
-| `level(name::String)` | 导入关卡名为name的关卡，数字会自动转化为字符串 |
+| `level(name)` | 导入关卡名为name的关卡，数字会自动转化为字符串 |
 | `rewind()` | 重启当前关卡 |
 | `submit(f::Function)` | 提交当前关卡的尝试f |
 | `interval` | 提交时的动画间隔 |

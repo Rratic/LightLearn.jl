@@ -133,7 +133,7 @@ end
 
 function chknear(x::Int,y::Int)
 	if abs(x-plyx)+abs(y-plyy)>1
-		throw("太远了，无法调用look()")
+		throw("太远了")
 	end
 end
 "查看(x,y)处的东西，必须在相邻4格或当前格"

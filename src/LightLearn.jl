@@ -69,7 +69,7 @@ function init_save()
 			if isa(dict,TOML.ParserError)
 				println("位于 $(joinpath(pwd(),"LightLearn/save.toml"))的TOML格式导入失败")
 			else
-				dict::Dict
+				typeassert(dict,Dict)
 				global records=dict["records"]
 			end
 			close(io)
@@ -87,7 +87,6 @@ end
 function init_canvas()
 	global window=GtkWindow("LightLearn",544,528;resizable=false)
 	push!(window,canvas)
-	Gtk.init_cairo_context(canvas)
 end
 function init_coord()
 	ctx=getgc(canvas::GtkCanvas)

@@ -1,7 +1,7 @@
 name = "LightLearn"
 uuid = "aea05ee4-eee8-4bb2-9be1-ccb376bfd141"
 authors = ["Rratic"]
-version = "2.0.1"
+version = "2.0.2"
 
 [deps]
 Cairo = "159f3aea-2a34-519c-b102-8c37f9878175"
@@ -12,6 +12,7 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 PNGFiles = "f57f5aa1-a3ce-4bc8-8ab9-96f992907883"
 Scratch = "6c6a2e73-6563-6170-7368-637461726353"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 
 [compat]
@@ -23,4 +24,5 @@ Gtk = "1.1"
 JSON = "0.21"
 PNGFiles = "0.3"
 Scratch = "1.1"
+TOML = "1"
 ZipFile = "0.9"
