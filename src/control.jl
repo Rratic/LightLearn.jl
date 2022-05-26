@@ -25,7 +25,7 @@ function about()
 # 流程
 ```jl
 init()		初始化资源
-level(name)	打开关卡name
+level("a")	打开关卡"a"
 此时可以进行一些测试
 submit() do
 	你的代码
@@ -151,9 +151,9 @@ function look(x::Int,y::Int)
 	v=@inbounds grids[x,y]
 	return _look(v)
 end
-function send(x::Int,y::Int,method::String,args...)
+function send(method::Symbol,x::Int,y::Int,args...)
 	chknear(x,y)
-	return _send(grids[x,y],method,args...)
+	return _send(grids[x,y],Val(method),args...)
 end
 function setinterval(to::Float64)
 	global interval=to

@@ -4,7 +4,7 @@
 ## 流程
 ```jl
 init()		初始化资源
-level(name)	打开关卡name
+level("a")	打开关卡"a"
 此时可以进行一些测试
 submit() do
 	你的代码
@@ -33,7 +33,7 @@ setinterval(x)	设置动画间隔
 | `level(name)` | 导入关卡名为name的关卡，数字会自动转化为字符串 |
 | `rewind()` | 重启当前关卡 |
 | `submit(f::Function)` | 提交当前关卡的尝试f |
-| `interval` | 提交时的动画间隔 |
+| `setinterval(x::Float64)` | 设置动画间隔 |
 | `init(b::Bool=true)` | 初始化数据，其中`b`控制是否导入标准Package项目 |
 | `vis(b::Bool)` | 控制窗口可见性 |
 | `quit()` | 退出并保存存档 |
