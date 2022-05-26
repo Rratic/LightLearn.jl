@@ -117,7 +117,7 @@ function submit(f::Function)
 			printstyled("未达成目标";color=:yellow)
 			return
 		end
-		printstyled("通过！ 步数：$count";color=:green)
+		printstyled("通过";color=:green)
 		if haskey(records,levelid)
 			@inbounds if records[levelid]>count
 				records[levelid]=count

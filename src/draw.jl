@@ -14,7 +14,12 @@ function load_imgsource(name::String,path::String)
 	imgsources[name]=m2
 end
 function fill_image(ctx::DContext,s::String,x::Int,y::Int)
-	img=imgsources[s]
+	if !haskey(imgsources,s)
+		@error "未找到图像资源：$s"
+		set_source_rgb(ctx,0.7,0,0)
+		rectangle(ctx,x,y,16,16)
+	end
+	img=@inbounds imgsources[s]
 	sur=CairoImageSurface(img)
 	set_source_surface(ctx,sur,x,y)
 	paint(ctx)

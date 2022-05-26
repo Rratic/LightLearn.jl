@@ -23,7 +23,6 @@ plyy=0
 count=0
 formal=false
 "提交时的动画间隔" interval=0.5
-canvas=nothing
 records=Dict{String,Int}()
 
 include("types.jl")
@@ -50,7 +49,6 @@ function init(b::Bool=true) # __init__
 		loaddir(dir)
 	end
 	init_save()
-	init_source()
 	init_canvas()
 	showall(window::GtkWindow)
 	nothing
@@ -80,16 +78,14 @@ function init_save()
 		println("未找到环境参数 \"LOCALAPPDATA\" ，将无法存档")
 	end
 end
-function init_source()
-	cd(dirname(@__DIR__))
-	for s in readdir("img";sort=false)
-		load_imgsource(s[1:end-4],"img/$s")
-	end
-end
 function init_canvas()
 	global window=GtkWindow("LightLearn",544,528;resizable=false)
 	global canvas=GtkCanvas()
 	push!(window,canvas)
+	@guarded draw(canvas) do widget # https://docs.gtk.org/gtk4/class.DrawingArea.html
+		init_coord()
+		_draw()
+	end
 end
 function init_coord()
 	ctx=getgc(canvas::GtkCanvas)
@@ -100,11 +96,6 @@ function init_coord()
 		fill_text(ctx,"$i",512,(i-1)<<5,16,16,16)
 		fill_text(ctx,"$i",(i-1)<<5,512,16,16,16)
 	end
-end
-
-@guarded draw(canvas::GtkCanvas) do widget # https://docs.gtk.org/gtk4/class.DrawingArea.html
-	init_coord()
-	_draw()
 end
 
 "退出并保存存档"
