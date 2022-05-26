@@ -6,6 +6,7 @@ function plyenter(i::Any)
 end
 solid(::Any)=false
 _look(i)=i
+_send(::Any,::Val)=nothing
 
 # Nothing
 function show_grid(::DContext,::Nothing,::Int,::Int)

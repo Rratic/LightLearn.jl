@@ -11,6 +11,8 @@ using Downloads
 using JSON
 using ZipFile
 
+# setinterval
+
 include("draw.jl")
 
 export installzip,install
@@ -23,7 +25,7 @@ plyy=0
 count=0
 formal=false
 "提交时的动画间隔" interval=0.5
-canvas=GtkCanvas()
+canvas=nothing
 records=Dict{String,Int}()
 
 export solid # 通用接口
@@ -32,9 +34,12 @@ include("types.jl")
 export loadpack,loaddir
 include("data.jl")
 
-export about,menu,level,rewind,submit,mvw,mva,mvs,mvd,look # 通用接口
-export guess # 特殊接口
-export interval # 可调变量
+# 流程接口
+export about,menu,level,rewind,submit
+# 使用接口
+export mvw,mva,mvs,mvd,look,send
+# 动画设置
+export interval,setinterval
 include("control.jl")
 
 export init,vis,quit
@@ -86,6 +91,7 @@ function init_source()
 end
 function init_canvas()
 	global window=GtkWindow("LightLearn",544,528;resizable=false)
+	global canvas=GtkCanvas()
 	push!(window,canvas)
 end
 function init_coord()

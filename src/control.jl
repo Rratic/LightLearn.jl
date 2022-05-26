@@ -145,7 +145,10 @@ function look(x::Int,y::Int)
 	v=@inbounds grids[x,y]
 	return _look(v)
 end
-function guess(x::Int,y::Int,v)
+function send(x::Int,y::Int,v)
 	chknear(x,y)
-	return _guess(grids[x,y],v)
+	return _send(grids[x,y],Val(v))
+end
+function setinterval(to::Float64)
+	global interval=to
 end
