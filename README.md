@@ -16,10 +16,11 @@ quit()		退出并保存存档
 
 ## 辅助工具
 ```jl
-menu()		列出当前所有关卡和描述
-vis(false)	关闭窗口
-vis(true)	打开窗口
-interval	提交时的动画间隔
+menu()			列出当前所有关卡和描述
+vis(false)		关闭窗口
+vis(true)		打开窗口
+interval		提交时的动画间隔
+setinterval(x)	设置动画间隔
 ```
 
 ## 导出的部分函数

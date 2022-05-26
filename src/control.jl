@@ -77,6 +77,9 @@ function level(name::String)
 end
 "重启当前关卡"
 function rewind()
+	if formal
+		throw("不能在提交时调用rewind")
+	end
 	lv=levels[levelid]
 	initlevel(lv)
 	plyenter(grids[lv.startx,lv.starty])
@@ -101,6 +104,9 @@ function move(x::Int,y::Int)
 end
 "提交当前关卡的尝试f"
 function submit(f::Function)
+	if formal
+		throw("不能在提交时调用submit")
+	end
 	lv=levels[levelid]
 	initlevel(lv)
 	global formal=true
@@ -140,14 +146,14 @@ end
 function look(x::Int,y::Int)
 	chknear(x,y)
 	if x<1||y<1||x>16||y>16
-		return Solid()
+		throw("越界")
 	end
 	v=@inbounds grids[x,y]
 	return _look(v)
 end
-function send(x::Int,y::Int,v)
+function send(x::Int,y::Int,method::String,args...)
 	chknear(x,y)
-	return _send(grids[x,y],Val(v))
+	return _send(grids[x,y],method,args...)
 end
 function setinterval(to::Float64)
 	global interval=to

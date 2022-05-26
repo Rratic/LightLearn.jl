@@ -11,8 +11,6 @@ using Downloads
 using JSON
 using ZipFile
 
-# setinterval
-
 include("draw.jl")
 
 export installzip,install
@@ -28,7 +26,6 @@ formal=false
 canvas=nothing
 records=Dict{String,Int}()
 
-export solid # 通用接口
 include("types.jl")
 
 export loadpack,loaddir
@@ -37,7 +34,7 @@ include("data.jl")
 # 流程接口
 export about,menu,level,rewind,submit
 # 使用接口
-export mvw,mva,mvs,mvd,look,send
+export mvw,mva,mvs,mvd,solid,look,send
 # 动画设置
 export interval,setinterval
 include("control.jl")
