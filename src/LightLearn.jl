@@ -36,6 +36,10 @@ export mvw,mva,mvs,mvd,solid,look,send
 export interval,setinterval
 include("control.jl")
 
+# 沙盒
+export sandbox,tp,getindex,setindex!
+include("sandbox.jl")
+
 export init,vis,quit
 "初始化数据，其中`b`控制是否导入标准Package项目"
 function init(b::Bool=true) # __init__
