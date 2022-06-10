@@ -8,7 +8,7 @@ function chkcompat(str::AbstractString)
 	end
 	key=str[compat.start+9:compat.stop-1]
 	ver=VersionNumber(key)
-	if ver>v"2.1.0"
+	if ver>v"2.2.0"
 		throw("LightLearn版本过低，至少需要$ver")
 	end
 end
