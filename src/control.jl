@@ -32,7 +32,7 @@ submit() do
 end
 来提交（建议在编辑器上编辑好再复制黏贴）
 rewind()	重启当前关卡
-quit()		退出并保存存档
+quit()		退出
 ```
 
 # 辅助工具
@@ -118,13 +118,6 @@ function submit(f::Function)
 			return
 		end
 		printstyled("通过";color=:green)
-		if haskey(records,levelid)
-			@inbounds if records[levelid]>count
-				records[levelid]=count
-			end
-		else
-			records[levelid]=count
-		end
 	catch er
 		if isa(er,String)
 			printstyled(er;color=:red)

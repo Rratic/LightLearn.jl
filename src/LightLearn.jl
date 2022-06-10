@@ -20,10 +20,8 @@ grids=Matrix{Any}(nothing,16,16)
 levelid=""
 plyx=0
 plyy=0
-count=0
 formal=false
 "提交时的动画间隔" interval=0.5
-records=Dict{String,Int}()
 
 include("types.jl")
 
@@ -48,7 +46,6 @@ function init(b::Bool=true) # __init__
 		end
 		loaddir(dir)
 	end
-	init_save()
 	init_canvas()
 	showall(window::GtkWindow)
 	nothing
@@ -58,26 +55,6 @@ function vis(b::Bool)
 	visible(window::GtkWindow,b)
 end
 
-function init_save()
-	if haskey(ENV,"LOCALAPPDATA")
-		cd(@inbounds(ENV["LOCALAPPDATA"]))
-		if !in("LightLearn",readdir("./";sort=false))
-			mkdir("LightLearn")
-		elseif in("save.toml",readdir("LightLearn";sort=false))
-			io=open("LightLearn/save.toml","r")
-			dict=TOML.tryparse(io)
-			if isa(dict,TOML.ParserError)
-				println("位于 $(joinpath(pwd(),"LightLearn/save.toml"))的TOML格式导入失败")
-			else
-				typeassert(dict,Dict)
-				global records=dict["records"]
-			end
-			close(io)
-		end
-	else
-		println("未找到环境参数 \"LOCALAPPDATA\" ，将无法存档")
-	end
-end
 function init_canvas()
 	global window=GtkWindow("LightLearn",544,528;resizable=false)
 	global canvas=GtkCanvas()
@@ -98,20 +75,9 @@ function init_coord()
 	end
 end
 
-"退出并保存存档"
+"退出"
 function quit()
 	destroy(window)
-	if haskey(ENV,"LOCALAPPDATA")
-		cd(@inbounds(ENV["LOCALAPPDATA"]))
-		io=open("LightLearn/save.toml","w")
-		try
-			TOML.print(io,Dict(
-				"records"=>records::Dict,
-			))
-		finally
-			close(io)
-		end
-	end
 end
 
 end

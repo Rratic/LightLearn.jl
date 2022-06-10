@@ -11,7 +11,7 @@ submit() do
 end
 来提交（建议在编辑器上编辑好再复制黏贴）
 rewind()	重启当前关卡
-quit()		退出并保存存档
+quit()		退出
 ```
 
 ## 辅助工具
@@ -36,7 +36,7 @@ setinterval(x)	设置动画间隔
 | `setinterval(x::Float64)` | 设置动画间隔 |
 | `init(b::Bool=true)` | 初始化数据，其中`b`控制是否导入标准Package项目 |
 | `vis(b::Bool)` | 控制窗口可见性 |
-| `quit()` | 退出并保存存档 |
+| `quit()` | 退出 |
 
 # 关卡创建
 [标准Package项目地址](https://github.com/JuliaRoadmap/Standard.llp)
