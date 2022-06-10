@@ -23,6 +23,14 @@ interval		提交时的动画间隔
 setinterval(x)	设置动画间隔
 ```
 
+导入后使用`sandbox()`，你就会看到
+```jl
+欢迎使用沙盒模式！ 请保留此函数的返回值，假设为`sand`
+tp(x,y)		移动到(x,y)处
+sand[x,y]	获取(x,y)处的数据
+sand[x,y]=v	覆盖(x,y)处的数据
+```
+
 ## 导出的部分函数
 | 原型 | 描述 |
 | --- | --- |
@@ -42,14 +50,14 @@ setinterval(x)	设置动画间隔
 [标准Package项目地址](https://github.com/JuliaRoadmap/Standard.llp)
 
 目录下应包含以下文件
-1. `Project.toml`，至少应包含
+* `Project.toml`，至少应包含
 	* `name`当前关卡包名
 	* `uuid`一个UUID
 	* `version`当前版本
 	* `description`介绍
 	* `[chapters]`，对于每个章节，提供对应的关卡id数组
 	* `[compat]`保留
-2. `包名.jl`，返回值是一个元组
+* `包名.jl`，返回值是一个元组
 	* 第一项表示关卡id和对应数据::`Vector{Pair{String,Level}}`
 	* 第二项表示build方法，不接受参数
 

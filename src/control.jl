@@ -97,10 +97,10 @@ function move(x::Int,y::Int)
 	global plyx=tx
 	global plyy=ty
 	plyenter(grids[tx,ty])
+	draw(canvas)
 	if formal
 		sleep(interval)
 	end
-	draw(canvas)
 end
 "提交当前关卡的尝试f"
 function submit(f::Function)

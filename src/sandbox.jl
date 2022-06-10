@@ -12,6 +12,11 @@ function sandbox()
 	sand[x,y]=v	覆盖(x,y)处的数据
 	```
 	""")
+	set_gtk_property!(window,:title,"Sandbox")
+	global plyx=1
+	global plyy=1
+	draw(canvas)
+	return Sandbox()
 end
 function tp(x::Int,y::Int)
 	if formal
@@ -22,6 +27,7 @@ function tp(x::Int,y::Int)
 	end
 	global plyx=x
 	global plyy=y
+	draw(canvas)
 end
 function Base.getindex(::Sandbox,x::Int,y::Int)
 	if formal
@@ -32,7 +38,7 @@ function Base.getindex(::Sandbox,x::Int,y::Int)
 	end
 	return grids[x,y] # @inbounds
 end
-function Base.setindex!(::Sandbox,x::Int,y::Int,v)
+function Base.setindex!(::Sandbox,v,x::Int,y::Int)
 	if formal
 		throw("禁止作弊")
 	end
@@ -40,4 +46,5 @@ function Base.setindex!(::Sandbox,x::Int,y::Int,v)
 		throw("越界")
 	end
 	grids[x,y]=v
+	draw(canvas)
 end
