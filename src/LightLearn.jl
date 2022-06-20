@@ -45,7 +45,7 @@ export init,vis,quit
 function init(b::Bool=true) # __init__
 	if b
 		dir=getllpdir("Standard")
-		if iszero(stat(dir).inode)
+		if !isdir(dir)
 			install("JuliaRoadmap","Standard.llp","latest")
 		end
 		loaddir(dir)
