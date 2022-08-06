@@ -1,25 +1,32 @@
-# Any
-function plyenter(i::Any)
-	if solid(i)
-		throw("禁止作弊")
-	end
-end
-solid(::Any)=false
+abstract type Cell end
+
+# properties
+_solid(::Cell)=false
 _look(i)=i
-_send(::Any,::Val,args...)=nothing
+_send(_, ::Cell, ::Val, args...)=nothing
 
-# Nothing
-show_grid(::DContext,::Nothing,::Int,::Int)=nothing
+# events
+ev_enter(_, ::Cell)=nothing
+ev_leave(_, ::Cell)=nothing
+ev_stay(_, ::Cell)=nothing
+ev_spawn(_, ::Cell)=nothing
+ev_destroy(_, ::Cell)=nothing
 
-# Int
-function show_grid(ctx::DContext,num::Int,x::Int,y::Int)
-	fill_text(ctx,string(num),x,y)
-end
+### built-in cell types ###
 
-struct Solid end
-solid(::Solid)=true
-function show_grid(ctx::DContext,::Solid,x::Int,y::Int)
-	set_source_rgb(ctx,0.5,0.5,0.5)
-	rectangle(ctx,x,y,32,32)
+struct Empty<:Cell end
+_show(_, ::Empty, x, y)=nothing
+
+struct Wall<:Cell end
+_solid(::Wall)=true
+function _show(st, ::Wall, x, y)
+	ctx=st.context
+	set_source_rgb(ctx, 0.5, 0.5, 0.5)
+	rectangle(ctx, x, y, 32, 32)
 	fill(ctx)
 end
+
+struct NumCell<:Cell
+	num::Number
+end
+_show(st, c::NumCell, x, y)=fill_text(st.context, string(c.num), x, y)

@@ -11,17 +11,26 @@ using Downloads
 using JSON
 using ZipFile
 
+mutable struct Status
+	# control
+	formal::Bool
+	levels::Dict
+	current::Vector
+	# map
+	grids::Matrix
+	x::Int
+	y::Int
+	private::Dict{Symbol, Any}
+	# display
+	context::GtkCanvas
+	window::GtkWindow
+	interval::Float64
+end
+
 include("draw.jl")
 
 export installzip,install
 include("install.jl")
-
-grids=Matrix{Any}(nothing,16,16)
-levelid=""
-plyx=0
-plyy=0
-formal=false
-"提交时的动画间隔" interval=0.5
 
 include("types.jl")
 
