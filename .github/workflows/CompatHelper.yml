@@ -1,5 +1,5 @@
 name: CompatHelper
-on: [push]
+on: ~
 permissions:
   contents: write
   pull-requests: write

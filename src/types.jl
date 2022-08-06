@@ -1,3 +1,6 @@
+"""
+表示网格元素的抽象类型
+"""
 abstract type Cell end
 
 # properties
@@ -29,4 +32,4 @@ end
 struct NumCell<:Cell
 	num::Number
 end
-_show(st, c::NumCell, x, y)=fill_text(st.context, string(c.num), x, y)
+_show(st, c::NumCell, x, y)=fill_text(st, string(c.num), x, y)

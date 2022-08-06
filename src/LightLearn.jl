@@ -11,25 +11,35 @@ using Downloads
 using JSON
 using ZipFile
 
+const LL_VERSION = v"3.0.0"
+const DContext = Union{CairoContext, GraphicsContext}
+
+export Status
+
+"""
+内置的默认状态集类型
+"""
 mutable struct Status
 	# control
 	formal::Bool
 	levels::Dict
 	current::Vector
 	# map
-	grids::Matrix
+	grids::Matrix{Cell}
 	x::Int
 	y::Int
-	private::Dict{Symbol, Any}
+	private::Dict{Symbol, T} where T
 	# display
-	context::GtkCanvas
 	window::GtkWindow
+	canvas::GtkCanvas
+	context::DContext
 	interval::Float64
+	imgcache::Dict{String, Matrix}
 end
 
 include("draw.jl")
 
-export installzip,install
+export install
 include("install.jl")
 
 include("types.jl")
@@ -51,11 +61,11 @@ include("sandbox.jl")
 
 export init,vis,quit
 "初始化数据，其中`b`控制是否导入标准Package项目"
-function init(b::Bool=true) # __init__
-	if b
+function init(loadstd::Bool=true) # __init__
+	if loadstd
 		dir=getllpdir("Standard")
-		if !isdir(dir)
-			install("JuliaRoadmap","Standard.llp","latest")
+		if !isfile(joinpath(dir, "Project.toml"))
+			install("JuliaRoadmap", "Standard.llp", "latest")
 		end
 		loaddir(dir)
 	end

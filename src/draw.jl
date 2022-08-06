@@ -1,6 +1,4 @@
-const DContext=Union{CairoContext,GraphicsContext}
-global imgsources=Dict{String,Matrix}()
-function load_imgsource(name::String,path::String)
+function load_imgsource(st::Status, name::String, path::String)
 	mat=PNGFiles.load(path)
 	tup=size(mat)
 	h=tup[1]
@@ -11,22 +9,30 @@ function load_imgsource(name::String,path::String)
 			m2[j,i]=RGB24(mat[i,j]) #
 		end
 	end
-	imgsources[name]=m2
+	st.imgcache[name]=m2
 end
-function fill_image(ctx::DContext,s::String,x::Int,y::Int)
-	if !haskey(imgsources,s)
+function fill_image(st::Status, s::String, x::Integer, y::Integer)
+	ctx=st.context
+	if !haskey(st.imgcache, s)
 		@error "未找到图像资源：$s"
-		set_source_rgb(ctx,0.7,0,0)
-		rectangle(ctx,x,y,16,16)
+		set_source_rgb(ctx, 0.7, 0, 0)
+		rectangle(ctx, x, y, 16, 16)
 	end
-	img=@inbounds imgsources[s]
+	img=st.imgcache[s]
 	sur=CairoImageSurface(img)
-	set_source_surface(ctx,sur,x,y)
+	set_source_surface(ctx, sur, x, y)
 	paint(ctx)
 end
-function fill_text(ctx::DContext,text::String,x::Int,y::Int,w::Int=32,h::Int=32,sz=div(w,textwidth(text)))
-	set_font_size(ctx,sz)
-	set_source_rgb(ctx,0,0,0)
-	move_to(ctx,x,y+h) # show_text 从左下角开始
-	show_text(ctx,text)
+function fill_text(st::Status,
+	text::String,
+	x::Int,
+	y::Int,
+	w::Int=32,
+	h::Int=32,
+	sz=div(w, textwidth(text)))
+	ctx=st.context
+	set_font_size(ctx, sz)
+	set_source_rgb(ctx, 0, 0, 0)
+	move_to(ctx, x, y+h) # show_text 从左下角开始
+	show_text(ctx, text)
 end
