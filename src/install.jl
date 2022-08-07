@@ -8,16 +8,12 @@ function chkcompat(str::AbstractString)
 	end
 	key=str[compat.start+9:compat.stop-1]
 	ver=VersionNumber(key)
-	if ver > v"2.3.0"
+	if ver>LL_VERSION
 		throw("LightLearn版本过低，至少需要$ver")
 	end
 end
-"从指定url下载zip"
-function installzip(url::AbstractString)
-	fpath=joinpath(tempdir(),tempname())*".zip"
-	fio=open(fpath,"w")
-	Downloads.download(url,fio)
-	close(fio)
+
+function install_localzip(fpath::AbstractString;remove::Bool=false)
 	re=ZipFile.Reader(fpath)
 	fs=re.files
 	maindir=fs[1].name # 实践得出
@@ -54,10 +50,23 @@ function installzip(url::AbstractString)
 	write(io,tomls)
 	close(io)
 	close(re)
-	rm(fpath)
+	if remove
+		rm(fpath)
+	end
 end
-"从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版"
-function install(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")
+
+function install_webzip(url::AbstractString)
+	fpath=joinpath(tempdir(), tempname())*"_llp.zip"
+	fio=open(fpath, "w")
+	Downloads.download(url, fio)
+	close(fio)
+	install_localzip(fpath)
+end
+
+"""
+从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版
+"""
+function install_repo(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")
 	io=IOBuffer()
 	quest=request("https://api.github.com/repos/$owner/$repo/releases";method="GET",output=io)
 	if quest.status!=200
@@ -71,7 +80,7 @@ function install(owner::AbstractString,repo::AbstractString,version::AbstractStr
 			@info "尝试：$(d["tag_name"])"
 			try
 				chkcompat(d["body"])
-				installzip(d["zipball_url"])
+				install_webzip(d["zipball_url"])
 				return
 			catch er
 				if isa(er,String)
@@ -85,7 +94,7 @@ function install(owner::AbstractString,repo::AbstractString,version::AbstractStr
 		for d in json
 			if d["tag_name"]==version
 				chkcompat(d["body"])
-				installzip(d["zipball_url"])
+				install_webzip(d["zipball_url"])
 			end
 		end
 		println("未找到标记为$version 的发布")

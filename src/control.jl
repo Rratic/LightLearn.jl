@@ -1,51 +1,22 @@
-function _draw()
-    ctx=getgc(canvas)
-	cacx=plyx # 缓存
-	cacy=plyy
+function _draw(st)
+    # ctx=getgc(canvas)
+	ctx=st.context
 	for i in 1:16
 		for j in 1:16
-			if i!=cacx||j!=cacy
-				show_grid(ctx,@inbounds(grids[i,j]),(i-1)<<5,(j-1)<<5)
-			else
-				fill_image(ctx,"ply",i<<5-30,j<<5-30)
-			end
+			_show(st,
+				@inbounds(grids[i, j]),
+				(i-1)<<5,
+				(j-1)<<5
+			)
 		end
 	end
+	fill_image(st, "ply", st.x<<5-30, st.y<<5-30)
 	set_source_rgb(ctx,0.625,0.625,0.625)
 	for k in 1:16
 		rectangle(ctx,k<<5-1,0,1,512)
 		rectangle(ctx,0,k<<5-1,512,1)
 	end
 	fill(ctx)
-end
-
-"获取相关信息"
-function about()
-	display(md"""
-# 流程
-```jl
-init()		初始化资源
-level("a")	打开关卡"a"
-此时可以进行一些测试
-submit() do
-	你的代码
-end
-来提交（建议在编辑器上编辑好再复制黏贴）
-rewind()	重启当前关卡
-quit()		退出
-```
-
-# 辅助工具
-```jl
-menu()		列出当前所有关卡和描述
-vis(false)	关闭窗口
-vis(true)	打开窗口
-interval	提交时的动画间隔
-```
-
-# 进阶内容
-参考 [README](@ref) 提供的信息
-	""")
 end
 
 "列出当前导入数据中的章节和关卡描述"
