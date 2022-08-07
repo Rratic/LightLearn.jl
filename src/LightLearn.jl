@@ -79,8 +79,8 @@ include("control.jl")
 export sandbox, tp, getindex, setindex!
 include("sandbox.jl")
 
-export init,vis,quit
-"初始化数据，其中`b`控制是否导入标准Package项目"
+export init, vis, quit
+
 function init(loadstd::Bool=true, st::Status) # __init__
 	if loadstd
 		dir=getllpdir("Standard")
@@ -93,10 +93,8 @@ function init(loadstd::Bool=true, st::Status) # __init__
 	showall(st.window)
 	nothing
 end
-"控制窗口可见性"
-function vis(b::Bool)
-	visible(window::GtkWindow,b)
-end
+
+vis(st::Status, b::Bool)=visible(st.window::GtkWindow, b)
 
 function init_canvas(st::Status)
 	st.window=GtkWindow("LightLearn",544,528;resizable=false)

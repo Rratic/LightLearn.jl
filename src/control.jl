@@ -20,7 +20,7 @@ function _draw(st)
 end
 
 "列出当前导入数据中的章节和关卡描述"
-function menu()
+function menu(st)
 	for pa::Pair in chapters
 		println("[ $(pa.first) ]")
 		for name in pa.second
@@ -55,32 +55,36 @@ function rewind()
 	initlevel(lv)
 	plyenter(grids[lv.startx,lv.starty])
 end
-mvw()=move(0,-1)
+#=mvw()=move(0,-1)
 mva()=move(-1,0)
 mvs()=move(0,1)
-mvd()=move(1,0)
-function move(x::Int,y::Int)
-	tx=plyx+x
-	ty=plyy+y
-	if tx<1||tx>16||ty<1||ty>16||solid(@inbounds(grids[tx,ty]))
+mvd()=move(1,0)=#
+function move(st::Status, x::Int, y::Int)
+	tx=st.x+x
+	ty=st.y+y
+	grids=st.grids
+	if in(grids, tx, ty) || @inbounds _solid(grids[tx, ty])
 		return
 	end
-	global plyx=tx
-	global plyy=ty
-	plyenter(grids[tx,ty])
-	draw(canvas)
-	if formal
-		sleep(interval)
+	if st.x==tx && st.y==ty
+		@inbounds ev_stay(st, grids[tx, ty])
+	else
+		@inbounds ev_leave(st, grids[st.x, st.y])
+		st.x=tx
+		st.y=ty
+		@inbounds ev_enter(st, grids[tx, ty])
+	end
+	draw(st.canvas)
+	if st.formal
+		sleep(st.interval)
 	end
 end
+
 "提交当前关卡的尝试f"
-function submit(f::Function)
-	if formal
-		throw("不能在提交时调用submit")
-	end
+function submit(st::Status, f::Function)
 	lv=levels[levelid]
 	initlevel(lv)
-	global formal=true
+	st.formal=true
 	try
 		plyenter(grids[lv.startx,lv.starty])
 		f()
@@ -96,7 +100,7 @@ function submit(f::Function)
 			throw(er)
 		end
 	finally
-		formal=false
+		st.formal=false
 	end
 	nothing
 end
