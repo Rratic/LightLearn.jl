@@ -19,40 +19,34 @@ function _draw(st)
 	fill(ctx)
 end
 
-"列出当前导入数据中的章节和关卡描述"
 function menu(st)
-	for pa::Pair in chapters
-		println("[ $(pa.first) ]")
-		for name in pa.second
-			println("$name\t$(levels[name].description)")
+end
+
+function initlevel(st::Status, lv::Level)
+	lv.initializer(st)
+	draw(st.canvas)
+end
+
+function level(st::Status, id::Integer, desc="#$id")
+	st.current=id
+	lv=st.levels[id]
+	set_gtk_property!(st.window, :title, "LightLearn: $desc")
+	initlevel(st, lv)
+	ev_enter(st, st.grids[st.x, st.y])
+end
+function level(st::Status, name::AbstractString)
+	for tup in st.chapters
+		if tup[2]==name
+			st.current=tup[1]
+			level(st, tup[1])
+			break
 		end
 	end
 end
-function initlevel(lv::Level)
-	global plyx=lv.startx
-	global plyy=lv.starty
-	lv.gen()
-	draw(canvas)
-end
-level(num::Int)=level(string(num))
-"导入关卡名为name的关卡，数字会自动转化为字符串"
-function level(name::String)
-	if formal
-		throw("不能在提交时调用level")
-	end
-	global levelid=name
-	lv=levels[name]
-	set_gtk_property!(window,:title,"LightLearn: $(lv.description)")
-	initlevel(lv)
-	plyenter(grids[lv.startx,lv.starty])
-end
-"重启当前关卡"
-function rewind()
-	if formal
-		throw("不能在提交时调用rewind")
-	end
-	lv=levels[levelid]
-	initlevel(lv)
+
+function rewind(st::Status)
+	lv=st.levels[st.current]
+	initlevel(st, lv)
 	plyenter(grids[lv.startx,lv.starty])
 end
 #=mvw()=move(0,-1)
@@ -80,29 +74,22 @@ function move(st::Status, x::Int, y::Int)
 	end
 end
 
-"提交当前关卡的尝试f"
 function submit(st::Status, f::Function)
-	lv=levels[levelid]
-	initlevel(lv)
+	lv=levels[st.current]
+	initlevel(st, lv)
 	st.formal=true
 	try
-		plyenter(grids[lv.startx,lv.starty])
+		ev_enter(st, grids[st.x, st.y])
 		f()
-		if !lv.chk()
-			printstyled("未达成目标";color=:yellow)
+		if !lv.check()
+			printstyled("未达成目标"; color=Base.default_color_warn)
 			return
 		end
-		printstyled("通过";color=:green)
-	catch er
-		if isa(er,String)
-			printstyled(er;color=:red)
-		else
-			throw(er)
-		end
+		printstyled("通过"; color=Base.default_color_info)
 	finally
 		st.formal=false
 	end
-	nothing
+	nothing # block display
 end
 
 function chknear(x::Int,y::Int)

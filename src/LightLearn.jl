@@ -44,8 +44,9 @@ end
 mutable struct Status
 	# control
 	formal::Bool
-	levels::Dict
-	current::Vector
+	levels::Vector{Level}
+	current::Int
+	chapters::Vector{Tuple{Int, String, String}}
 	# map
 	grids::Grid
 	x::Int
