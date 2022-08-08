@@ -3,21 +3,22 @@ struct Level
 	check::Function
 end
 
-function loadpack(st, s::AbstractString)
-	loaddir(st, getllpdir(s))
+function load_package(st::Status, s::AbstractString)
+	load_dir(st, getllpdir(s))
 end
-function loaddir(st, s::AbstractString)
-	@info "正在导入关卡包：$s"
-	#= setting=TOML.parsefile(joinpath(s, "Project.toml"))::Dict
-	if haskey(setting, "description")
-		@info setting["description"]
-	end =#
+function load_dir(st::Status, s::AbstractString)
+	@info "$s"
+	setting=TOML.parsefile(joinpath(s, "Project.toml"))::Dict
 	mod=include(joinpath(s, "src/$(setting["name"]).jl"))::Module
-	mod.init()
-	for lvs in mod.levels
-		if haskey(levels,p.first)
-			printstyled("关卡名冲突：$(p.first)";color=:red)
-		end
-		levels[p.first]=p.second
+	mod.init(st)
+	applen=length(mod.levels)
+	orilen=length(st.levels)
+	fullen=applen+orilen
+	sizehint!(st.levels, fullen)
+	sizehint!(st.chapters, fullen)
+	for pair in mod.levels
+		orilen+=1
+		push!(st.levels, pair.second)
+		push!(st.chapters, LevelSlot(orilen, pair.first))
 	end
 end

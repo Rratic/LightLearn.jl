@@ -1,4 +1,4 @@
-function _draw(st)
+function _draw(st::Status)
     # ctx=getgc(canvas)
 	ctx=st.context
 	for i in 1:16
@@ -19,7 +19,10 @@ function _draw(st)
 	fill(ctx)
 end
 
-function menu(st)
+function menu(st::Status)
+	for slot in st.chapters
+		println(slot.linkid, '\t', slot.title)
+	end
 end
 
 function initlevel(st::Status, lv::Level)
@@ -35,10 +38,10 @@ function level(st::Status, id::Integer, desc="#$id")
 	ev_enter(st, st.grids[st.x, st.y])
 end
 function level(st::Status, name::AbstractString)
-	for tup in st.chapters
-		if tup[2]==name
-			st.current=tup[1]
-			level(st, tup[1])
+	for slot in st.chapters
+		if slot.title==name
+			st.current=slot.linkid
+			level(st, slot.linkid, slot.title)
 			break
 		end
 	end
@@ -47,12 +50,13 @@ end
 function rewind(st::Status)
 	lv=st.levels[st.current]
 	initlevel(st, lv)
-	plyenter(grids[lv.startx,lv.starty])
+	ev_enter(st, st.grids[st.x, st.y])
 end
-#=mvw()=move(0,-1)
-mva()=move(-1,0)
-mvs()=move(0,1)
-mvd()=move(1,0)=#
+
+mvw(st::Status)=move(st, 0, -1)
+mva(st::Status)=move(st, -1, 0)
+mvs(st::Status)=move(st, 0, 1)
+mvd(st::Status)=move(st, 1, 0)
 function move(st::Status, x::Int, y::Int)
 	tx=st.x+x
 	ty=st.y+y
@@ -74,12 +78,12 @@ function move(st::Status, x::Int, y::Int)
 	end
 end
 
-function submit(st::Status, f::Function)
+function submit(st::Status, f)
 	lv=levels[st.current]
 	initlevel(st, lv)
 	st.formal=true
 	try
-		ev_enter(st, grids[st.x, st.y])
+		ev_enter(st, st.grids[st.x, st.y])
 		f()
 		if !lv.check()
 			printstyled("未达成目标"; color=Base.default_color_warn)
@@ -90,26 +94,4 @@ function submit(st::Status, f::Function)
 		st.formal=false
 	end
 	nothing # block display
-end
-
-function chknear(x::Int,y::Int)
-	if abs(x-plyx)+abs(y-plyy)>1
-		throw("太远了")
-	end
-end
-"查看(x,y)处的东西，必须在相邻4格或当前格"
-function look(x::Int,y::Int)
-	chknear(x,y)
-	if x<1||y<1||x>16||y>16
-		throw("越界")
-	end
-	v=@inbounds grids[x,y]
-	return _look(v)
-end
-function send(method::Symbol,x::Int,y::Int,args...)
-	chknear(x,y)
-	return _send(grids[x,y],Val(method),args...)
-end
-function setinterval(to::Float64)
-	global interval=to
 end

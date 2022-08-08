@@ -20,18 +20,16 @@ function tp(sand::Sandbox, x::Integer, y::Integer)
 	st.y=y
 	draw(st.canvas)
 end
-function Base.getindex(::Sandbox,x::Int,y::Int)
+function Base.getindex(sand::Sandbox, x::Integer, y::Integer)
 	st=sand.ref
 	if !in(st.grids, x, y)
 		error("越界")
 	end
-	return grids[x,y] # @inbounds
+	return st.grids[x,y] # @inbounds
 end
-function Base.setindex!(::Sandbox,v,x::Int,y::Int)
+function Base.setindex!(sand::Sandbox, v, x::Integer, y::Integer)
 	st=sand.ref
-	if !in(st.grids, x, y)
-		error("越界")
-	end
-	grids[x, y]=v
+	chkin(st, x, y)
+	st.grids[x, y]=v
 	draw(canvas)
 end

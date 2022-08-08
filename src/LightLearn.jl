@@ -38,6 +38,11 @@ function Base.in(::Grid, x::Integer, y::Integer)
 	return 1<=x<=16 && 1<=y<=16
 end
 
+struct LevelSlot
+	linkid::Int
+	title::String
+end
+
 """
 内置的默认状态集类型
 """
@@ -46,7 +51,7 @@ mutable struct Status
 	formal::Bool
 	levels::Vector{Level}
 	current::Int
-	chapters::Vector{Tuple{Int, String, String}}
+	chapters::Vector{LevelSlot}
 	# map
 	grids::Grid
 	x::Int
@@ -65,15 +70,14 @@ include("draw.jl")
 export install_localzip, install_webzip, install_repo
 include("install.jl")
 
-export loadpack,loaddir
+export load_package, load_dir
 include("data.jl")
 
-# 流程接口
-export about,menu,level,rewind,submit
-# 使用接口
-export mvw,mva,mvs,mvd,solid,look,send
-# 动画设置
-export interval,setinterval
+export look, send
+include("utils.jl")
+
+export menu, level, rewind, submit
+export mvw, mva, mvs, mvd
 include("control.jl")
 
 # 沙盒
@@ -86,9 +90,9 @@ function init(loadstd::Bool=true, st::Status) # __init__
 	if loadstd
 		dir=getllpdir("Standard")
 		if !isfile(joinpath(dir, "Project.toml"))
-			install("JuliaRoadmap", "Standard.llp", "latest")
+			install_repo("JuliaRoadmap", "Standard.llp", "latest")
 		end
-		loaddir(st, dir)
+		load_dir(st, dir)
 	end
 	init_canvas(st)
 	showall(st.window)

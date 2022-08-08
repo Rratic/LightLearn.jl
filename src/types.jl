@@ -5,7 +5,7 @@ abstract type Cell end
 
 # properties
 _solid(::Cell)=false
-_look(i)=i
+_look(i::Cell)=i
 _send(_, ::Cell, ::Val, args...)=nothing
 
 # events
