@@ -1,16 +1,13 @@
-struct Level
-	initializer::Function
-	check::Function
-end
-
 function load_package(st::Status, s::AbstractString)
 	load_dir(st, getllpdir(s))
 end
+
 function load_dir(st::Status, s::AbstractString)
 	@info "$s"
 	setting=TOML.parsefile(joinpath(s, "Project.toml"))::Dict
+	chkcompat(setting["compat"]["LightLearn"])
 	mod=include(joinpath(s, "src/$(setting["name"]).jl"))::Module
-	mod.init(st)
+	Base.invokelatest(mod.init, st)
 	applen=length(mod.levels)
 	orilen=length(st.levels)
 	fullen=applen+orilen

@@ -4,7 +4,7 @@ function _draw(st::Status)
 	for i in 1:16
 		for j in 1:16
 			_show(st,
-				@inbounds(grids[i, j]),
+				@inbounds(st.grids[i, j]),
 				(i-1)<<5,
 				(j-1)<<5
 			)

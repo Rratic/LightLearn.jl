@@ -1,16 +1,24 @@
 function getllpdir(name::AbstractString)
-	return joinpath(get_scratch!(@__MODULE__,"llp"),name)
+	return joinpath(get_scratch!(@__MODULE__, "llp"), name)
 end
+
 function chkcompat(str::AbstractString)
+	ver=Pkg.Types.semver_spec(str)
+	if !(LL_VERSION in ver)
+		error("LightLearn 版本 $LL_VERSION 不符合要求 ($ver)")
+	end
+end
+
+function chkcompatmsg(str::AbstractString)
 	compat=findfirst(r"COMPAT=\".*\"", str)
 	if compat===nothing
 		error("发布信息中未找到符合格式的 COMPAT 数据")
 	end
-	key=str[compat.start+9:compat.stop-1]
-	ver=Pkg.Types.semver_spec(key)
-	if !(LL_VERSION in ver)
-		error("LightLearn 版本 $LL_VERSION 不符合要求 ($ver)")
-	end
+	return chkcompat(str[compat.start+8:compat.stop-1])
+end
+
+function uninstall(name::AbstractString)
+	rm(getllpdir(name))
 end
 
 function install_localzip(fpath::AbstractString;remove::Bool=false)
@@ -76,7 +84,7 @@ function install_githubrepo(owner::AbstractString, repo::AbstractString, version
 		for d in json
 			@info "尝试：$(d["tag_name"])"
 			try
-				chkcompat(d["body"])
+				chkcompatmsg(d["body"])
 				install_webzip(d["zipball_url"])
 				return
 			catch er
@@ -90,7 +98,7 @@ function install_githubrepo(owner::AbstractString, repo::AbstractString, version
 	else
 		for d in json
 			if d["tag_name"]==version
-				chkcompat(d["body"])
+				chkcompatmsg(d["body"])
 				install_webzip(d["zipball_url"])
 			end
 		end

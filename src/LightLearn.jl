@@ -3,6 +3,7 @@ using Gtk
 using Cairo
 using ColorTypes:RGB24, RGB
 using CommonMark
+using Pkg
 using PNGFiles
 using PNGFiles.FixedPointNumbers:N0f8
 using TOML
@@ -17,7 +18,7 @@ const DContext = Union{CairoContext, GraphicsContext}
 export Cell, Empty, Wall, NumCell
 include("types.jl")
 
-export Grid, Status
+export Grid, Level, LevelSlot, Status
 
 mutable struct Grid
 	data::Matrix{Cell}
@@ -34,6 +35,11 @@ function clear!(g::Grid#=, x=16, y=16=#)
 end
 function Base.in(::Grid, x::Integer, y::Integer)
 	return 1<=x<=16 && 1<=y<=16
+end
+
+struct Level
+	initializer::Function
+	check::Function
 end
 
 struct LevelSlot
@@ -68,7 +74,7 @@ end
 
 include("draw.jl")
 
-export install_localzip, install_webzip, install_githubrepo
+export install_localzip, install_webzip, install_githubrepo, uninstall
 include("install.jl")
 
 export load_package, load_dir
@@ -89,19 +95,25 @@ export init, vis, quit
 
 function init(loadstd::Bool=true) # __init__
 	st=Status(;
-		window=GtkWindow("LightLearn", 544, 528; resizable=false),
+		window=GtkWindow("LightLearn", 544, 528; resizable=false, visible=false),
 		canvas=GtkCanvas()
 	)
-	push!(st.window, st.canvas)
-	if loadstd
-		dir=getllpdir("Standard")
-		if !isfile(joinpath(dir, "Project.toml"))
-			install_githubrepo("JuliaRoadmap", "Standard.llp", "latest")
+	try
+		push!(st.window, st.canvas)
+		if loadstd
+			dir=getllpdir("Standard")
+			if !isfile(joinpath(dir, "Project.toml"))
+				install_githubrepo("JuliaRoadmap", "Standard.llp", "latest")
+			end
+			load_dir(st, dir)
 		end
-		load_dir(st, dir)
+		init_canvas(st)
+		visible(st.window)
+		showall(st.window)
+	catch er
+		destroy(st.window)
+		throw(er)
 	end
-	init_canvas(st)
-	showall(st.window)
 	return st
 end
 
@@ -122,8 +134,8 @@ function init_coord(st::Status)
 	rectangle(ctx,0,0,544,528)
 	fill(ctx)
 	for i in 1:16
-		fill_text(ctx,"$i",512,(i-1)<<5,16,16,16)
-		fill_text(ctx,"$i",(i-1)<<5,512,16,16,16)
+		fill_text(st, "$i", 512, (i-1)<<5, 16, 16, 16)
+		fill_text(st, "$i", (i-1)<<5, 512, 16, 16, 16)
 	end
 end
 
