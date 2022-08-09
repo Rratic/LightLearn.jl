@@ -2,14 +2,14 @@ function getllpdir(name::AbstractString)
 	return joinpath(get_scratch!(@__MODULE__,"llp"),name)
 end
 function chkcompat(str::AbstractString)
-	compat=findfirst(r"COMPAT=\"v[0-9]*\.[0-9]*(\.[0-9]*)?\"",str)
+	compat=findfirst(r"COMPAT=\".*\"", str)
 	if compat===nothing
-		throw("发布信息中未找到符合格式的COMPAT数据")
+		error("发布信息中未找到符合格式的 COMPAT 数据")
 	end
 	key=str[compat.start+9:compat.stop-1]
-	ver=VersionNumber(key)
-	if ver>LL_VERSION
-		throw("LightLearn版本过低，至少需要$ver")
+	ver=Pkg.Types.semver_spec(key)
+	if !(LL_VERSION in ver)
+		error("LightLearn 版本 $LL_VERSION 不符合要求 ($ver)")
 	end
 end
 
@@ -28,7 +28,7 @@ function install_localzip(fpath::AbstractString;remove::Bool=false)
 		end
 	end
 	if tomls==""
-		throw("未找到位于根的Project.toml")
+		error("未找到位于根的Project.toml")
 	end
 	toml=TOML.parse(tomls)
 	pname=toml["name"]
@@ -63,14 +63,11 @@ function install_webzip(url::AbstractString)
 	install_localzip(fpath)
 end
 
-"""
-从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版
-"""
-function install_repo(owner::AbstractString,repo::AbstractString,version::AbstractString="latest")
+function install_githubrepo(owner::AbstractString, repo::AbstractString, version::AbstractString="latest")
 	io=IOBuffer()
 	quest=request("https://api.github.com/repos/$owner/$repo/releases";method="GET",output=io)
 	if quest.status!=200
-		throw("Github API 请求失败，status=$(quest.status)")
+		error("Github API 请求失败，status=$(quest.status)")
 	end
 	str=String(take!(io))
 	json=JSON.parse(str)
@@ -83,8 +80,8 @@ function install_repo(owner::AbstractString,repo::AbstractString,version::Abstra
 				install_webzip(d["zipball_url"])
 				return
 			catch er
-				if isa(er,String)
-					@error er
+				if isa(er, ErrorException)
+					@warn er
 				else
 					throw(er)
 				end
@@ -97,6 +94,6 @@ function install_repo(owner::AbstractString,repo::AbstractString,version::Abstra
 				install_webzip(d["zipball_url"])
 			end
 		end
-		println("未找到标记为$version 的发布")
+		@error "未找到标记为 $version 的发布"
 	end
 end

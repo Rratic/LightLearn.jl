@@ -19,12 +19,10 @@ include("types.jl")
 
 export Grid, Status
 
-"""
-内置的默认网格类型
-"""
 mutable struct Grid
 	data::Matrix{Cell}
 end
+
 Grid()=Grid(fill(Empty(), 16, 16))
 Base.getindex(g::Grid, x, y)=g.data[x, y]
 function Base.setindex!(g::Grid, v::Cell, x, y)
@@ -43,31 +41,34 @@ struct LevelSlot
 	title::String
 end
 
-"""
-内置的默认状态集类型
-"""
-mutable struct Status
+Base.@kwdef mutable struct Status
 	# control
-	formal::Bool
-	levels::Vector{Level}
-	current::Int
-	chapters::Vector{LevelSlot}
+	formal::Bool = false
+	levels::Vector{Level} = Level[]
+	current::Int = 1
+	chapters::Vector{LevelSlot} = LevelSlot[]
 	# map
-	grids::Grid
-	x::Int
-	y::Int
-	private::Dict{Symbol, T} where T
+	grids::Grid = Grid()
+	x::Int = 1
+	y::Int = 1
+	private::Dict = Dict{Symbol, Any}()
 	# display
 	window::GtkWindow
 	canvas::GtkCanvas
-	context::DContext
-	interval::Float64
-	imgcache::Dict{String, Matrix}
+	context::Union{DContext, Nothing} = nothing
+	interval::Float64 = 0.5
+	imgcache::Dict{String, Matrix} = Dict{String, Matrix}()
+end
+function Base.show(io::IO, st::Status)
+	if st.formal
+		print(io, "<formal> ")
+	end
+	println(io, get_gtk_property(st.window, :title, String))
 end
 
 include("draw.jl")
 
-export install_localzip, install_webzip, install_repo
+export install_localzip, install_webzip, install_githubrepo
 include("install.jl")
 
 export load_package, load_dir
@@ -86,32 +87,37 @@ include("sandbox.jl")
 
 export init, vis, quit
 
-function init(loadstd::Bool=true, st::Status) # __init__
+function init(loadstd::Bool=true) # __init__
+	st=Status(;
+		window=GtkWindow("LightLearn", 544, 528; resizable=false),
+		canvas=GtkCanvas()
+	)
+	push!(st.window, st.canvas)
 	if loadstd
 		dir=getllpdir("Standard")
 		if !isfile(joinpath(dir, "Project.toml"))
-			install_repo("JuliaRoadmap", "Standard.llp", "latest")
+			install_githubrepo("JuliaRoadmap", "Standard.llp", "latest")
 		end
 		load_dir(st, dir)
 	end
 	init_canvas(st)
 	showall(st.window)
-	nothing
+	return st
 end
 
 vis(st::Status, b::Bool)=visible(st.window::GtkWindow, b)
 
 function init_canvas(st::Status)
-	st.window=GtkWindow("LightLearn",544,528;resizable=false)
-	st.canvas=GtkCanvas()
-	push!(st.window, st.canvas)
-	@guarded draw(st.canvas) do _ # https://docs.gtk.org/gtk4/class.DrawingArea.html
+	# https://docs.gtk.org/gtk4/class.DrawingArea.html
+	@guarded draw(st.canvas) do _
+		st.context=getgc(st.canvas)
 		init_coord(st)
 		_draw(st)
 	end
 end
-function init_coord(st)
-	ctx=getgc(canvas::GtkCanvas)
+
+function init_coord(st::Status)
+	ctx=st.context
 	set_source_rgb(ctx,0.75,0.75,0.75) # 背景填充
 	rectangle(ctx,0,0,544,528)
 	fill(ctx)
@@ -121,9 +127,6 @@ function init_coord(st)
 	end
 end
 
-"退出"
-function quit()
-	destroy(window)
-end
+quit(st::Status)=destroy(st.window)
 
 end
