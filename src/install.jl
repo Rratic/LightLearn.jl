@@ -21,7 +21,7 @@ function uninstall(name::AbstractString)
 	rm(getllpdir(name))
 end
 
-function install_localzip(fpath::AbstractString;remove::Bool=false)
+function install_localzip(fpath::AbstractString; remove::Bool=false)
 	re=ZipFile.Reader(fpath)
 	fs=re.files
 	maindir=fs[1].name # 实践得出

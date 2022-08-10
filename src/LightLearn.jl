@@ -15,7 +15,7 @@ using ZipFile
 const LL_VERSION = v"3.0.0"
 const DContext = Union{CairoContext, GraphicsContext}
 
-export Cell, Empty, Wall, NumCell
+export Cell, Space, Wall, NumCell
 include("types.jl")
 
 export Grid, Level, LevelSlot, Status
@@ -24,14 +24,14 @@ mutable struct Grid
 	data::Matrix{Cell}
 end
 
-Grid()=Grid(fill(Empty(), 16, 16))
+Grid()=Grid(fill(Space(), 16, 16))
 Base.getindex(g::Grid, x, y)=g.data[x, y]
 function Base.setindex!(g::Grid, v::Cell, x, y)
 	g.data[x, y]=v
 end
 function clear!(g::Grid#=, x=16, y=16=#)
 	# if size(g, 1)<x
-	fill!(g.data, Empty())
+	fill!(g.data, Space())
 end
 function Base.in(::Grid, x::Integer, y::Integer)
 	return 1<=x<=16 && 1<=y<=16
@@ -84,7 +84,7 @@ export look, send
 include("utils.jl")
 
 export menu, level, rewind, submit
-export mvw, mva, mvs, mvd
+export north!, west!, east!, south!
 include("control.jl")
 
 # 沙盒

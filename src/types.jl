@@ -1,6 +1,3 @@
-"""
-表示网格元素的抽象类型
-"""
 abstract type Cell end
 
 # properties
@@ -17,8 +14,8 @@ ev_destroy(_, ::Cell)=nothing
 
 ### built-in cell types ###
 
-struct Empty<:Cell end
-_show(_, ::Empty, x, y)=nothing
+struct Space<:Cell end
+_show(_, ::Space, x, y)=nothing
 
 struct Wall<:Cell end
 _solid(::Wall)=true

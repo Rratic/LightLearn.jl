@@ -1,79 +1,52 @@
-# 使用方式
-导入后使用`about()`，你就会看到
+## 用户手册
+!!! note
+	如果您是使用者，请注意：调用本手册以外函数、修改源代码或关卡数据、在提交函数中包含错误的函数等行为均应视作作弊，但不被强制保证。
 
-## 流程
-```jl
-init()		初始化资源
-level("a")	打开关卡"a"
-此时可以进行一些测试
-submit() do
-	你的代码
-end
-来提交（建议在编辑器上编辑好再复制黏贴）
-rewind()	重启当前关卡
-quit()		退出
-```
+### 流程
+使用 `st = init()` 创建一个游戏句柄，其中 `init` 接收一个参数，为 `false` 时不会导入 [`Standard.llp`](https://github.com/JuliaRoadmap/Standard.llp)。
+在结束时，需注意调用 `quit(st)` 注销句柄。
 
-## 辅助工具
-```jl
-menu()			列出当前所有关卡和描述
-vis(false)		关闭窗口
-vis(true)		打开窗口
-interval		提交时的动画间隔
-setinterval(x)	设置动画间隔
-```
+使用 `menu`，你可以阅读已导入的关卡列表（包括整数 id 与 名称），可以通过 `level` 导入指定的关卡。可以进行手动尝试，但是正式提交需要调用 `submit()`，它接受一个函数作为参数，这个函数接受唯一参数是 `st::Status`。在此模式下，你可以调用：（以下函数第一个参数均为 `st::Status`）
+* `north!`
+* `west!`
+* `east!`
+* `south!`
+* `look(st::Status, x::Int, y::Int)` 在「四相邻格」或本格时进行「观察」
+* `send(st::Status, method::Symbol, x::Int, y::Int, args...)` 在「四相邻格」或本格时「发送数据」
 
-导入后使用`sandbox()`，你就会看到
-```jl
-欢迎使用沙盒模式！ 请保留此函数的返回值，假设为`sand`
-tp(x,y)		移动到(x,y)处
-sand[x,y]	获取(x,y)处的数据
-sand[x,y]=v	覆盖(x,y)处的数据
-```
+### 沙盒模式
+使用 `sand = sandbox(st)`，你可以创建一个沙盒。
+在此模式下，可以调用 `tp(sand, x, y)`，`sand[x, y]`，`sand[x, y]=v`
 
-## 导出的部分函数
-| 原型 | 描述 |
-| --- | --- |
-| `installzip(url)` | 从指定url下载zip |
-| `install(owner,repo,version="latest")` | 从`owner`的github仓库`repo`的发布中下载版本`version`，特别地，`latest`表示下载尽可能的最新版 |
-| `about()` | 获取相关信息 |
-| `menu()` | 列出当前导入数据中的章节和关卡描述 |
-| `level(name)` | 导入关卡名为name的关卡，数字会自动转化为字符串 |
-| `rewind()` | 重启当前关卡 |
-| `submit(f::Function)` | 提交当前关卡的尝试f |
-| `setinterval(x::Float64)` | 设置动画间隔 |
-| `init(b::Bool=true)` | 初始化数据，其中`b`控制是否导入标准Package项目 |
-| `vis(b::Bool)` | 控制窗口可见性 |
-| `quit()` | 退出 |
+### 导入
+LightLearn 提供了两个导入函数：
+* `load_package(st::Status, s::AbstractString)` 导入已安装的包，使用其名称
+* `load_dir(st::Status, s::AbstractString)` 从本地指定目录导入
 
-# 关卡创建
-[标准Package项目地址](https://github.com/JuliaRoadmap/Standard.llp)
+### 安装
+LightLearn 提供了三个安装函数：
+* `install_localzip(fpath::AbstractString; remove::Bool=false)` 从本地指定路径安装 zip
+* `install_webzip(url::AbstractString)` 从网络指定 url 安装 zip
+* `install_githubrepo(owner::AbstractString, repo::AbstractString, version::AbstractString="latest")` 从指定 github 仓库安装指定发布
+
+同时，可以使用 `uninstall(name::AbstractString)` 去除安装
+
+### 杂项
+* 可以使用 `vis(st::Status, b::Bool)` 设置窗口可见性
+
+## 开发者手册
+[标准 Package 项目地址](https://github.com/JuliaRoadmap/Standard.llp)
 
 目录下应包含以下文件
-* `Project.toml`，至少应包含
-	* `name`当前关卡包名
-	* `uuid`一个UUID
-	* `version`当前版本
-	* `description`介绍
-	* `[chapters]`，对于每个章节，提供对应的关卡id数组
-	* `[compat]`保留
-* `包名.jl`，返回值是一个元组
-	* 第一项表示关卡id和对应数据::`Vector{Pair{String,Level}}`
-	* 第二项表示build方法，不接受参数
 
-若要支持install方法，应在对应的github仓库发布release，标注恰当的tag（带`v`），在信息中必须含有字段`COMPAT="v版本"`，表示接受的最低LightLearn版本
+**Project.toml**
+* `name` 当前关卡包名
+* `uuid` 一个UUID
+* `version` 当前版本
+* `description` 介绍
+* `[compat]` 其中 `"LightLearn"` 项表示接受的版本
 
-## 预定义类型
-| 名称 | 描述 |
-| --- | --- |
-| Nothing | 空白 |
-| Int | 数字 |
-| Solid | 墙 |
+**src/包名.jl**
+* 应有一个模块，名称为 `LL_包名`
 
-## 标准函数
-| 名称 | 参数列表（除第一个外） | 描述 |
-| --- | --- | --- |
-| solid | -> Bool | 是否允许玩家移动到此格 |
-| plyenter | | 玩家移动到此格时进行的操作 |
-| _look | | 希望·返回给`look`函数的值 |
-| _send | ::Val, args... | 传递数据，会被`send`函数调用 |
+若要支持 `install_githubrepo` 方法，应在对应的 github 仓库发布 release，标注恰当的 tag（带`v`），在信息中必须含有字段`COMPAT="版本"`，与 `toml["compat"]["LightLearn"]` 统一

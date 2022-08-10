@@ -13,12 +13,12 @@ end
 function look(st::Status, x::Int, y::Int)
 	chknear(st, x, y)
 	chkin(st, x, y)
-	v=@inbounds st.grids[x,y]
+	@inbounds v=st.grids[x,y]
 	return _look(v)
 end
 
 function send(st::Status, method::Symbol, x::Int, y::Int, args...)
 	chknear(st, x, y)
 	chkin(st, x, y)
-	return _send(st.grids[x, y], Val(method), args...)
+	@inbounds return _send(st.grids[x, y], Val(method), args...)
 end

@@ -21,7 +21,7 @@ function Base.getindex(sand::Sandbox, x::Integer, y::Integer)
 	chkin(st, x, y)
 	@inbounds return st.grids[x, y]
 end
-function Base.setindex!(sand::Sandbox, v, x::Integer, y::Integer)
+function Base.setindex!(sand::Sandbox, v::Cell, x::Integer, y::Integer)
 	st=sand.ref
 	chkin(st, x, y)
 	@inbounds st.grids[x, y]=v

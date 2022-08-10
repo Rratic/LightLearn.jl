@@ -53,10 +53,10 @@ function rewind(st::Status)
 	ev_enter(st, st.grids[st.x, st.y])
 end
 
-mvw(st::Status)=move(st, 0, -1)
-mva(st::Status)=move(st, -1, 0)
-mvs(st::Status)=move(st, 0, 1)
-mvd(st::Status)=move(st, 1, 0)
+north!(st::Status)=move(st, 0, -1)
+west!(st::Status)=move(st, -1, 0)
+east!(st::Status)=move(st, 1, 0)
+south!(st::Status)=move(st, 0, 1)
 function move(st::Status, x::Int, y::Int)
 	tx=st.x+x
 	ty=st.y+y
