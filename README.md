@@ -6,7 +6,7 @@
 使用 `st = init()` 创建一个游戏句柄，其中 `init` 接收一个参数，为 `false` 时不会导入 [`Standard.llp`](https://github.com/JuliaRoadmap/Standard.llp)。
 在结束时，需注意调用 `quit(st)` 注销句柄。
 
-使用 `menu`，你可以阅读已导入的关卡列表（包括整数 id 与 名称），可以通过 `level` 导入指定的关卡。可以进行手动尝试，但是正式提交需要调用 `submit()`，它接受一个函数作为参数，这个函数接受唯一参数是 `st::Status`。在此模式下，你可以调用：（以下函数第一个参数均为 `st::Status`）
+使用 `menu`，你可以阅读已导入的关卡列表（包括整数 id 与 名称），可以通过 `level` 导入指定的关卡。可以进行手动尝试，但是正式提交需要调用 `submit(st)`，第二个参数接受一个函数，这个函数接受唯一参数是 `st::Status`。在此模式下，你可以调用：（以下函数第一个参数均为 `st::Status`）
 * `north!`
 * `west!`
 * `east!`
@@ -47,6 +47,6 @@ LightLearn 提供了三个安装函数：
 * `[compat]` 其中 `"LightLearn"` 项表示接受的版本
 
 **src/包名.jl**
-* 应有一个模块，名称为 `LL_包名`
+* 返回值应为 `NamedTuple`
 
 若要支持 `install_githubrepo` 方法，应在对应的 github 仓库发布 release，标注恰当的 tag（带`v`），在信息中必须含有字段`COMPAT="版本"`，与 `toml["compat"]["LightLearn"]` 统一

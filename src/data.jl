@@ -6,7 +6,7 @@ function load_dir(st::Status, s::AbstractString)
 	@info "$s"
 	setting=TOML.parsefile(joinpath(s, "Project.toml"))::Dict
 	chkcompat(setting["compat"]["LightLearn"])
-	mod=include(joinpath(s, "src/$(setting["name"]).jl"))::Module
+	mod=include(joinpath(s, "src/$(setting["name"]).jl"))
 	Base.invokelatest(mod.init, st)
 	applen=length(mod.levels)
 	orilen=length(st.levels)

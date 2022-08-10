@@ -61,7 +61,7 @@ function move(st::Status, x::Int, y::Int)
 	tx=st.x+x
 	ty=st.y+y
 	grids=st.grids
-	if in(grids, tx, ty) || @inbounds _solid(grids[tx, ty])
+	if !in(grids, tx, ty) || @inbounds _solid(grids[tx, ty])
 		return
 	end
 	if st.x==tx && st.y==ty
@@ -78,14 +78,14 @@ function move(st::Status, x::Int, y::Int)
 	end
 end
 
-function submit(st::Status, f)
-	lv=levels[st.current]
+function submit(f, st::Status)
+	lv=st.levels[st.current]
 	initlevel(st, lv)
 	st.formal=true
 	try
 		ev_enter(st, st.grids[st.x, st.y])
-		f()
-		if !lv.check()
+		f(st)
+		if !lv.check(st)
 			printstyled("未达成目标"; color=Base.default_color_warn)
 			return
 		end

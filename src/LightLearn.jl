@@ -47,6 +47,11 @@ struct LevelSlot
 	title::String
 end
 
+function default_parser()
+	p=CommonMark.Parser()
+	enable!(p, AdmonitionRule())
+	return p
+end
 Base.@kwdef mutable struct Status
 	# control
 	formal::Bool = false
@@ -57,7 +62,7 @@ Base.@kwdef mutable struct Status
 	grids::Grid = Grid()
 	x::Int = 1
 	y::Int = 1
-	private::Dict = Dict{Symbol, Any}()
+	private::Dict = Dict{Symbol, Any}(:mdparser => default_parser())
 	# display
 	window::GtkWindow
 	canvas::GtkCanvas
